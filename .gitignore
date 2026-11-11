@@ -1,0 +1,13 @@
+.venv*/
+.env*
+runs/
+models/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+.impeccable/config.local.json
+.runtime.lock
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/questions/

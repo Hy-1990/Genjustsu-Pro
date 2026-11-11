@@ -1,0 +1,454 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T15:26:25.884742+00:00",
+  "title": "Design System: Genjustsu Pro",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0127 259.05)",
+          "oklch(26% 0.0279 259.05)",
+          "oklch(38% 0.0430 259.05)",
+          "oklch(50% 0.0506 259.05)",
+          "oklch(62% 0.0506 259.05)",
+          "oklch(74% 0.0430 259.05)",
+          "oklch(86% 0.0253 259.05)",
+          "oklch(95% 0.0076 259.05)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "tonalRamp": [
+          "oklch(15% 0.0097 255.33)",
+          "oklch(26% 0.0213 255.33)",
+          "oklch(38% 0.0329 255.33)",
+          "oklch(50% 0.0387 255.33)",
+          "oklch(62% 0.0387 255.33)",
+          "oklch(74% 0.0329 255.33)",
+          "oklch(86% 0.0193 255.33)",
+          "oklch(95% 0.0058 255.33)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(50% 0.0000 89.88)",
+          "oklch(62% 0.0000 89.88)",
+          "oklch(74% 0.0000 89.88)",
+          "oklch(86% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0011 258.32)",
+          "oklch(26% 0.0025 258.32)",
+          "oklch(38% 0.0039 258.32)",
+          "oklch(50% 0.0045 258.32)",
+          "oklch(62% 0.0045 258.32)",
+          "oklch(74% 0.0039 258.32)",
+          "oklch(86% 0.0023 258.32)",
+          "oklch(95% 0.0007 258.32)"
+        ]
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Rail",
+        "tonalRamp": [
+          "oklch(15% 0.0031 255.51)",
+          "oklch(26% 0.0069 255.51)",
+          "oklch(38% 0.0107 255.51)",
+          "oklch(50% 0.0125 255.51)",
+          "oklch(62% 0.0125 255.51)",
+          "oklch(74% 0.0107 255.51)",
+          "oklch(86% 0.0063 255.51)",
+          "oklch(95% 0.0019 255.51)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "tonalRamp": [
+          "oklch(15% 0.0039 257.20)",
+          "oklch(26% 0.0086 257.20)",
+          "oklch(38% 0.0132 257.20)",
+          "oklch(50% 0.0156 257.20)",
+          "oklch(62% 0.0156 257.20)",
+          "oklch(74% 0.0132 257.20)",
+          "oklch(86% 0.0078 257.20)",
+          "oklch(95% 0.0023 257.20)"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Primary",
+        "tonalRamp": [
+          "oklch(15% 0.0300 259.55)",
+          "oklch(26% 0.0660 259.55)",
+          "oklch(38% 0.1020 259.55)",
+          "oklch(50% 0.1200 259.55)",
+          "oklch(62% 0.1200 259.55)",
+          "oklch(74% 0.1020 259.55)",
+          "oklch(86% 0.0600 259.55)",
+          "oklch(95% 0.0180 259.55)"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Primary Hover",
+        "tonalRamp": [
+          "oklch(15% 0.0300 259.15)",
+          "oklch(26% 0.0660 259.15)",
+          "oklch(38% 0.1020 259.15)",
+          "oklch(50% 0.1200 259.15)",
+          "oklch(62% 0.1200 259.15)",
+          "oklch(74% 0.1020 259.15)",
+          "oklch(86% 0.0600 259.15)",
+          "oklch(95% 0.0180 259.15)"
+        ]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Primary Soft",
+        "tonalRamp": [
+          "oklch(15% 0.0048 263.01)",
+          "oklch(26% 0.0105 263.01)",
+          "oklch(38% 0.0162 263.01)",
+          "oklch(50% 0.0191 263.01)",
+          "oklch(62% 0.0191 263.01)",
+          "oklch(74% 0.0162 263.01)",
+          "oklch(86% 0.0095 263.01)",
+          "oklch(95% 0.0029 263.01)"
+        ]
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Success",
+        "tonalRamp": [
+          "oklch(15% 0.0229 156.10)",
+          "oklch(26% 0.0503 156.10)",
+          "oklch(38% 0.0777 156.10)",
+          "oklch(50% 0.0915 156.10)",
+          "oklch(62% 0.0915 156.10)",
+          "oklch(74% 0.0777 156.10)",
+          "oklch(86% 0.0457 156.10)",
+          "oklch(95% 0.0137 156.10)"
+        ]
+      },
+      "success-soft": {
+        "role": "semantic",
+        "displayName": "Success Soft",
+        "tonalRamp": [
+          "oklch(15% 0.0029 153.67)",
+          "oklch(26% 0.0064 153.67)",
+          "oklch(38% 0.0098 153.67)",
+          "oklch(50% 0.0116 153.67)",
+          "oklch(62% 0.0116 153.67)",
+          "oklch(74% 0.0098 153.67)",
+          "oklch(86% 0.0058 153.67)",
+          "oklch(95% 0.0017 153.67)"
+        ]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "Danger",
+        "tonalRamp": [
+          "oklch(15% 0.0300 22.91)",
+          "oklch(26% 0.0660 22.91)",
+          "oklch(38% 0.1020 22.91)",
+          "oklch(50% 0.1200 22.91)",
+          "oklch(62% 0.1200 22.91)",
+          "oklch(74% 0.1020 22.91)",
+          "oklch(86% 0.0600 22.91)",
+          "oklch(95% 0.0180 22.91)"
+        ]
+      },
+      "danger-soft": {
+        "role": "semantic",
+        "displayName": "Danger Soft",
+        "tonalRamp": [
+          "oklch(15% 0.0038 17.42)",
+          "oklch(26% 0.0083 17.42)",
+          "oklch(38% 0.0129 17.42)",
+          "oklch(50% 0.0151 17.42)",
+          "oklch(62% 0.0151 17.42)",
+          "oklch(74% 0.0129 17.42)",
+          "oklch(86% 0.0076 17.42)",
+          "oklch(95% 0.0023 17.42)"
+        ]
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "Secondary",
+        "tonalRamp": [
+          "oklch(15% 0.0020 253.85)",
+          "oklch(26% 0.0044 253.85)",
+          "oklch(38% 0.0068 253.85)",
+          "oklch(50% 0.0080 253.85)",
+          "oklch(62% 0.0080 253.85)",
+          "oklch(74% 0.0068 253.85)",
+          "oklch(86% 0.0040 253.85)",
+          "oklch(95% 0.0012 253.85)"
+        ]
+      },
+      "secondary-hover": {
+        "role": "neutral",
+        "displayName": "Secondary Hover",
+        "tonalRamp": [
+          "oklch(15% 0.0036 254.61)",
+          "oklch(26% 0.0079 254.61)",
+          "oklch(38% 0.0122 254.61)",
+          "oklch(50% 0.0144 254.61)",
+          "oklch(62% 0.0144 254.61)",
+          "oklch(74% 0.0122 254.61)",
+          "oklch(86% 0.0072 254.61)",
+          "oklch(95% 0.0022 254.61)"
+        ]
+      },
+      "field-border": {
+        "role": "neutral",
+        "displayName": "Field Border",
+        "tonalRamp": [
+          "oklch(15% 0.0053 254.93)",
+          "oklch(26% 0.0116 254.93)",
+          "oklch(38% 0.0179 254.93)",
+          "oklch(50% 0.0211 254.93)",
+          "oklch(62% 0.0211 254.93)",
+          "oklch(74% 0.0179 254.93)",
+          "oklch(86% 0.0105 254.93)",
+          "oklch(95% 0.0032 254.93)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus",
+        "tonalRamp": [
+          "oklch(15% 0.0256 263.66)",
+          "oklch(26% 0.0564 263.66)",
+          "oklch(38% 0.0871 263.66)",
+          "oklch(50% 0.1025 263.66)",
+          "oklch(62% 0.1025 263.66)",
+          "oklch(74% 0.0871 263.66)",
+          "oklch(86% 0.0512 263.66)",
+          "oklch(95% 0.0154 263.66)"
+        ]
+      },
+      "media-ground": {
+        "role": "neutral",
+        "displayName": "Media Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0020 253.85)",
+          "oklch(26% 0.0044 253.85)",
+          "oklch(38% 0.0068 253.85)",
+          "oklch(50% 0.0080 253.85)",
+          "oklch(62% 0.0080 253.85)",
+          "oklch(74% 0.0068 253.85)",
+          "oklch(86% 0.0040 253.85)",
+          "oklch(95% 0.0012 253.85)"
+        ]
+      },
+      "media-dark": {
+        "role": "neutral",
+        "displayName": "Media Dark",
+        "tonalRamp": [
+          "oklch(15% 0.0070 257.53)",
+          "oklch(26% 0.0155 257.53)",
+          "oklch(38% 0.0239 257.53)",
+          "oklch(50% 0.0282 257.53)",
+          "oklch(62% 0.0282 257.53)",
+          "oklch(74% 0.0239 257.53)",
+          "oklch(86% 0.0141 257.53)",
+          "oklch(95% 0.0042 257.53)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default native bilingual reading stack."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Panel and provider headings."
+      },
+      "subheading": {
+        "displayName": "Subheading",
+        "purpose": "Review and result headings."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Compact controls and annotations."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Base button text."
+      }
+    },
+    "shadows": [
+      {
+        "name": "toast",
+        "value": "0 7px 25px rgb(0 0 0 / 15%)",
+        "purpose": "Transient fixed feedback only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-transition",
+        "value": "background-color 160ms, color 160ms",
+        "purpose": "Button interaction feedback."
+      },
+      {
+        "name": "status-pulse",
+        "value": "1.7s ease-in-out infinite",
+        "purpose": "Progress opacity .35 to 1; disabled for reduced motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "1650px"
+      },
+      {
+        "name": "compact-desktop",
+        "value": "1180px"
+      },
+      {
+        "name": "single-column",
+        "value": "950px"
+      },
+      {
+        "name": "mobile",
+        "value": "620px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Shipped primary button treatment.",
+      "html": "<button class=\"ds-primary\">Generate finished video</button>",
+      "css": ".ds-primary{font-family:-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;font-size:14px;font-weight:550;line-height:1.4;border:0;border-radius:8px;padding:10px 15px;cursor:pointer;transition:background-color 160ms,color 160ms;background:var(--primary,#2357aa);color:white;}.ds-primary:hover:not(:disabled){background:var(--primary-hover,#194589);}.ds-primary:focus-visible{outline:3px solid var(--focus,#8daef0);outline-offset:3px;}.ds-primary:disabled{opacity:.48;cursor:not-allowed;}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Shipped secondary button treatment.",
+      "html": "<button class=\"ds-secondary\">Prepare guidance</button>",
+      "css": ".ds-secondary{font-family:-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;font-size:14px;font-weight:550;line-height:1.4;border:0;border-radius:8px;padding:10px 15px;cursor:pointer;transition:background-color 160ms,color 160ms;background:#eef2f7;color:var(--ink,#1d2d46);}.ds-secondary:hover:not(:disabled){background:#e0e7f0;}.ds-secondary:focus-visible{outline:3px solid var(--focus,#8daef0);outline-offset:3px;}.ds-secondary:disabled{opacity:.48;cursor:not-allowed;}"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Shipped quiet button treatment.",
+      "html": "<button class=\"ds-quiet\">API keys</button>",
+      "css": ".ds-quiet{font-family:-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;font-size:14px;font-weight:550;line-height:1.4;border:0;border-radius:8px;padding:10px 15px;cursor:pointer;transition:background-color 160ms,color 160ms;background:transparent;color:var(--ink,#1d2d46);}.ds-quiet:hover:not(:disabled){background:var(--rail,#eaf0f8);}.ds-quiet:focus-visible{outline:3px solid var(--focus,#8daef0);outline-offset:3px;}.ds-quiet:disabled{opacity:.48;cursor:not-allowed;}"
+    },
+    {
+      "name": "Text Action",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "Shipped text action treatment.",
+      "html": "<button class=\"ds-text\">Back to workspace</button>",
+      "css": ".ds-text{font-family:-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;font-size:14px;font-weight:550;line-height:1.4;border:0;border-radius:8px;padding:10px 15px;cursor:pointer;transition:background-color 160ms,color 160ms;background:transparent;color:var(--primary,#2357aa);}.ds-text:hover:not(:disabled){background:transparent;}.ds-text:focus-visible{outline:3px solid var(--focus,#8daef0);outline-offset:3px;}.ds-text:disabled{opacity:.48;cursor:not-allowed;}.ds-text{padding:4px 0;font-size:13px;}.ds-text:hover{color:var(--primary-hover,#194589);text-decoration:underline;}"
+    },
+    {
+      "name": "Password Field",
+      "kind": "input",
+      "description": "Password Field from the shipped workspace.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-key\">API Key</label><input class=\"ds-field\" id=\"ds-key\" type=\"password\" placeholder=\"••••••••••••••••\">",
+      "css": ".ds-field-label{display:block;font:12px -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;color:var(--ink,#1d2d46);margin-bottom:6px;}.ds-field{font:12px -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;width:100%;padding:9px 10px;border:1px solid #c8d2df;border-radius:7px;background:white;color:var(--ink,#1d2d46);}.ds-field::placeholder{color:#68788d;opacity:1;}.ds-field:focus-visible{outline:3px solid var(--focus,#8daef0);outline-offset:3px;}",
+      "refersTo": "field"
+    },
+    {
+      "name": "Task Navigation",
+      "kind": "nav",
+      "description": "Task Navigation from the shipped workspace.",
+      "html": "<nav class=\"ds-nav\"><button class=\"ds-task\" aria-current=\"page\"><strong>Source clip.mp4</strong><small>Needs review</small></button></nav>",
+      "css": ".ds-nav{background:var(--rail,#eaf0f8);padding:12px;}.ds-task{display:flex;flex-direction:column;gap:5px;width:100%;align-items:flex-start;padding:10px;border:0;border-radius:8px;background:#d5e2f6;color:#194589;font:12px -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;text-align:left;cursor:pointer;}.ds-task strong{font-weight:550;}.ds-task small{font-size:12px;}.ds-task:hover{background:#dfe8f5;}.ds-task:focus-visible{outline:3px solid var(--focus,#8daef0);outline-offset:3px;}"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "description": "Status Badge from the shipped workspace.",
+      "html": "<span class=\"ds-status\">Configured</span>",
+      "css": ".ds-status{display:inline-block;background:var(--success-soft,#eff7f1);color:var(--success,#246843);padding:3px 8px;border-radius:4px;font:500 12px/1.6 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;white-space:nowrap;}",
+      "refersTo": "status-badge-success"
+    },
+    {
+      "name": "Working Panel",
+      "kind": "card",
+      "description": "Working Panel from the shipped workspace.",
+      "html": "<section class=\"ds-panel\"><h2>Input materials</h2><p>Prepare source video and character references.</p></section>",
+      "css": ".ds-panel{background:var(--surface,#fff);color:var(--ink,#1d2d46);border:1px solid var(--line,#dce3ed);border-radius:12px;padding:20px;font:14px/1.6 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;}.ds-panel h2{margin:0 0 19px;font-size:15px;font-weight:650;}.ds-panel p{margin:0;font-size:12px;color:var(--muted,#59697e);}",
+      "refersTo": "panel"
+    },
+    {
+      "name": "Source Upload",
+      "kind": "custom",
+      "description": "Source Upload from the shipped workspace.",
+      "html": "<label class=\"ds-drop\">Choose or drop a video<span>4–30 sec · MP4 / MOV / WebM · With audio</span><input type=\"file\" accept=\".mp4,.mov,.webm\"></label>",
+      "css": ".ds-drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:134px;padding:19px 10px;background:#f8fafd;border:1px dashed #b2c1d6;border-radius:8px;color:var(--ink,#1d2d46);font:550 12px/1.6 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;text-align:center;cursor:pointer;}.ds-drop span{color:var(--muted,#59697e);font-weight:400;}.ds-drop input{position:absolute;width:1px;height:1px;opacity:0;}.ds-drop:hover{background:#eaf1fe;border-color:var(--primary,#2357aa);}.ds-drop:focus-within{outline:3px solid var(--focus,#8daef0);outline-offset:3px;}"
+    },
+    {
+      "name": "Media Selection",
+      "kind": "custom",
+      "description": "Media Selection from the shipped workspace.",
+      "html": "<div class=\"ds-tabs\" role=\"group\" aria-label=\"Video preview\"><button aria-pressed=\"false\">Original</button><button aria-pressed=\"true\">Guidance</button><button aria-pressed=\"false\">Depth</button><button aria-pressed=\"false\">Mask</button></div>",
+      "css": ".ds-tabs{display:flex;gap:4px;flex-wrap:wrap;}.ds-tabs button{border:0;border-radius:5px;background:transparent;color:var(--muted,#59697e);padding:5px 10px;font:550 12px/1.4 -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif;cursor:pointer;transition:background-color 160ms,color 160ms;}.ds-tabs button:hover{background:#f0f4f9;}.ds-tabs button[aria-pressed=true]{background:var(--primary-soft,#e8effc);color:var(--primary,#2357aa);}.ds-tabs button:focus-visible{outline:3px solid var(--focus,#8daef0);outline-offset:3px;}",
+      "refersTo": "preview-tab-active"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Technical Product Catalog",
+    "overview": "Cool stone surfaces, deep blue ink and restrained cobalt selection give this local video tool the calm precision of a technical product catalog. The interface is compact and task-led: media, controls and processing state share a working surface.\n\nWhite containers separate editable materials from inspection. Standard web controls, bilingual labels and explicit status text keep the visual language practical. Color distinguishes action, selection, success and failure; it does not decorate the workspace.",
+    "keyCharacteristics": [
+      "Cool neutral layers with cobalt action and selection.",
+      "Compact, aligned controls and readable media.",
+      "State and recovery adjacent to the task."
+    ],
+    "rules": [
+      {
+        "name": "The State Color Rule",
+        "body": "Cobalt marks action and selection; green marks approved or complete states; red marks actionable failure. Every state also has text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Task Order Rule",
+        "body": "At single-column widths, materials lead until guidance exists; then the viewer leads for inspection.",
+        "section": "layout"
+      },
+      {
+        "name": "The Tonal Separation Rule",
+        "body": "Panels stay flat at rest; fine borders and neutral fills establish containment. Toasts alone use the shipped floating shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use cobalt for primary actions and selected inspection controls.",
+      "Do pair status colors with explicit text.",
+      "Do let Chinese and English labels wrap where space is constrained.",
+      "Do keep review, progress and recovery beside the viewer.",
+      "Do retain native video controls and the current inspection time when metadata permits."
+    ],
+    "donts": [
+      "Don't make all actions primary; use secondary, quiet and text treatments for supporting actions.",
+      "Don't apply container shadows; separation comes from tone and fine borders.",
+      "Don't put an empty viewer ahead of materials in the single-column initial state.",
+      "Don't hide guidance behind the materials once guidance exists in the single-column workspace.",
+      "Don't infer successful paid generation from the synthetic review screenshots."
+    ]
+  }
+}

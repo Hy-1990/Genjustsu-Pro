@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Genjustsu Pro</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Tasks">
+      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">G</span><span>Genjustsu <b>Pro</b></span></a>
+      <button class="new-task primary" id="new-task"><svg><use href="#plus"/></svg><span data-i18n="newTask">新建任务</span></button>
+      <div class="history-heading"><h2 data-i18n="recent">最近任务</h2><span id="task-count">0</span></div>
+      <div class="history" id="history"></div>
+      <p class="history-empty" id="history-empty" data-i18n="historyEmpty">完成的任务会保留在这里，随时回来继续。</p>
+      <div class="sidebar-foot"><span class="local-dot"></span><span data-i18n="localWorkspace">本地工作空间</span></div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <span class="breadcrumb" data-i18n="workspace">视频换角工作台</span>
+        <div class="toolbar">
+          <button class="language-button" id="language" aria-label="Switch language">EN</button>
+          <button class="quiet settings-trigger" id="settings-open"><svg><use href="#settings"/></svg><span data-i18n="settings">密钥设置</span><span class="key-dot" id="key-dot"></span></button>
+        </div>
+      </header>
+      <main>
+        <div id="workspace">
+          <div class="page-heading"><div><h1 data-i18n="title">换一个角色，保留原有表演</h1><p data-i18n="subtitle">准备动作引导，检查后一次生成完整视频。</p></div><span class="model-label">Seedance 2.5</span></div>
+          <div class="setup-notice" id="setup-notice" hidden><svg><use href="#key"/></svg><p data-i18n="setupNotice">首次使用，请先配置 DreamAPI 和 Replicate 密钥。</p><button class="text-button" id="setup-open" data-i18n="configure">去配置</button></div>
+          <ol class="steps" aria-label="Workflow">
+            <li class="current" id="step-prepare"><span>1</span><b data-i18n="stepPrepare">准备素材</b></li>
+            <li id="step-review"><span>2</span><b data-i18n="stepReview">检查引导</b></li>
+            <li id="step-generate"><span>3</span><b data-i18n="stepGenerate">生成与导出</b></li>
+          </ol>
+          <div class="workbench">
+            <section class="materials" aria-labelledby="materials-title">
+              <div class="panel-heading"><h2 id="materials-title" data-i18n="materials">输入素材</h2><span id="source-duration" class="metadata"></span></div>
+              <form id="source-form">
+                <div class="field-heading"><label for="source-file" data-i18n="sourceVideo">原始视频</label><span class="required" data-i18n="required">必填</span></div>
+                <label class="drop-zone" id="source-drop" for="source-file">
+                  <svg class="upload-icon"><use href="#upload"/></svg>
+                  <strong id="source-name" data-i18n="chooseVideo">选择或拖入视频</strong>
+                  <span data-i18n="sourceHint">4–30 秒 · MP4 / MOV / WebM · 含原声</span>
+                  <input id="source-file" name="video" type="file" accept=".mp4,.mov,.webm" required>
+                </label>
+                <details class="advanced">
+                  <summary data-i18n="advanced">预处理选项</summary>
+                  <label for="mode" data-i18n="method">引导方式</label>
+                  <select id="mode" name="mode">
+                    <option value="depth" data-i18n="modeDepth">深度 + 人物分割</option>
+                    <option value="face_mesh" data-i18n="modeMesh">人脸网格 · 适合居中口播</option>
+                    <option value="depth_mesh" data-i18n="modeBoth">深度 + 分割 + 人脸网格</option>
+                  </select>
+                  <label for="subject" data-i18n="subject">要替换的主体</label>
+                  <input id="subject" name="subject" value="person" maxlength="200">
+                  <p class="field-help" data-i18n="subjectHint">默认 person 会选择检测到的人物。多人时请仔细检查遮罩。</p>
+                </details>
+                <button class="secondary full-width" id="prepare-button" type="submit"><svg><use href="#layers"/></svg><span data-i18n="prepare">准备引导视频</span></button>
+                <p class="cost-note" data-i18n="prepareCost">此步骤会调用 Replicate 并产生费用。</p>
+              </form>
+              <form id="generate-form">
+                <div class="section-divider"></div>
+                <div class="field-heading"><label for="reference-file" data-i18n="character">目标角色</label><span class="required" data-i18n="required">必填</span></div>
+                <label class="reference-upload" for="reference-file">
+                  <img id="reference-image" src="/static/favicon.svg" alt="" hidden>
+                  <svg id="reference-icon"><use href="#person"/></svg>
+                  <span><strong id="reference-name" data-i18n="chooseReference">添加角色参考</strong><small data-i18n="referenceHint">图片或身份参考视频</small></span>
+                  <svg class="small-icon"><use href="#plus"/></svg>
+                  <input id="reference-file" name="reference" type="file" accept=".png,.jpg,.jpeg,.webp,.mp4,.mov,.webm">
+                </label>
+                <details class="second-reference">
+                  <summary data-i18n="addSecond">添加第二个角色参考（可选）</summary>
+                  <label class="file-button" for="second-reference" data-i18n="chooseImage">选择参考图片</label>
+                  <input id="second-reference" name="second_reference" type="file" accept=".png,.jpg,.jpeg,.webp">
+                  <span id="second-name" class="field-help"></span>
+                </details>
+                <div class="field-heading prompt-heading"><label for="prompt" data-i18n="prompt">替换说明</label><span class="metadata" id="prompt-count">0 / 950</span></div>
+                <textarea id="prompt" name="prompt" rows="4" maxlength="950" required></textarea>
+                <p class="field-help" data-i18n="promptHint">描述人物如何替换。多个角色需注明与原片人物的对应关系。</p>
+                <label class="resolution-label" for="resolution" data-i18n="resolution">输出分辨率</label>
+                <select id="resolution" name="resolution"><option value="480p">480p</option><option value="720p" selected>720p</option><option value="1080p">1080p</option></select>
+                <button class="primary full-width generate-button" id="generate-button" disabled><svg><use href="#spark"/></svg><span data-i18n="generate">生成完整视频</span></button>
+                <p class="cost-note" id="generate-help" data-i18n="generationGate">先准备并批准引导视频，即可生成。</p>
+              </form>
+            </section>
+            <section class="preview-panel" aria-labelledby="preview-title">
+              <div class="panel-heading"><h2 id="preview-title" data-i18n="preview">视频预览</h2><span class="status-badge" id="state-label" data-i18n="stateIdle">等待素材</span></div>
+              <div class="preview-tabs" id="preview-tabs" role="group" aria-label="Video preview"></div>
+              <div class="media-stage" id="media-stage">
+                <video id="preview-video" controls playsinline preload="metadata" hidden></video>
+                <div class="empty-preview" id="empty-preview">
+                  <svg class="film-icon"><use href="#film"/></svg>
+                  <h3 data-i18n="emptyTitle">从一段原始视频开始</h3>
+                  <p data-i18n="emptyCopy">上传素材后，在这里对照原片、动作引导与最终结果。</p>
+                  <span class="empty-formats">MP4 · MOV · WebM</span>
+                </div>
+              </div>
+              <div class="viewer-footer"><span id="preview-caption" data-i18n="originalAudio">最终成片保留原始音轨</span><a id="download" class="text-button" download hidden><svg><use href="#download"/></svg><span data-i18n="download">下载视频</span></a></div>
+              <div class="task-progress" id="task-progress" hidden role="status"><div class="progress-head"><span class="progress-dot"></span><strong id="progress-title"></strong><span class="metadata" id="progress-time"></span></div><p id="progress-copy"></p><div class="progress-track"><span></span></div></div>
+              <div class="review-panel" id="review-panel" hidden>
+                <div class="review-heading"><svg><use href="#check"/></svg><h3 data-i18n="reviewTitle">生成前，检查整段视频</h3></div>
+                <p data-i18n="reviewCopy">确认头发、手和衣服都在遮罩内，背景没有被误选；人脸网格需全程贴合。听一下人声与动作是否同步。</p>
+                <label class="checkbox-row"><input type="checkbox" id="review-check"><span data-i18n="reviewConfirm">我已检查整段引导视频，确认可以生成。</span></label>
+                <div class="review-actions"><button class="primary" id="approve-button" disabled data-i18n="approve">批准引导</button><button class="text-button" id="repair-button" data-i18n="repair">用原片重新分割</button></div>
+                <p class="field-help" id="repair-hint" data-i18n="repairHint">重新分割会额外调用 Replicate，完成后需要再次检查。</p>
+              </div>
+              <div class="approved-note" id="approved-note" hidden><svg><use href="#check"/></svg><span data-i18n="approved">引导已批准，可以生成。</span></div>
+              <div class="error-panel" id="job-error" hidden role="alert"><strong data-i18n="attention">任务需要处理</strong><p id="job-error-message"></p><button class="secondary" id="resume-button" hidden data-i18n="resume">继续获取结果</button></div>
+              <div class="result-note" id="result-note" hidden><svg><use href="#check"/></svg><div><h3 data-i18n="resultReady">成片已就绪</h3><p data-i18n="resultCopy">原始音轨已恢复。播放检查人物、动作和口型后即可下载。</p><p class="field-help" id="duration-note" hidden data-i18n="durationNote">已微调生成画面的尾部时长以匹配原片，原始音轨保持完整。</p></div></div>
+              <div class="workflow-note"><svg><use href="#info"/></svg><p data-i18n="workflowNote">预处理使用 Replicate，视频生成使用 DreamAPI。每次生成直接输出所选分辨率。</p></div>
+            </section>
+          </div>
+        </div>
+        <section id="settings-view" hidden>
+          <button class="text-button back-button" id="settings-back"><svg><use href="#back"/></svg><span data-i18n="back">返回工作台</span></button>
+          <div class="page-heading"><div><h1 data-i18n="settingsTitle">连接你的模型服务</h1><p data-i18n="settingsSubtitle">密钥保存在这台 Mac 的系统钥匙串，下次启动自动读取。</p></div></div>
+          <div class="settings-content">
+            <section class="provider-section">
+              <div class="provider-heading"><div class="provider-symbol">D</div><div><h2>DreamAPI</h2><p data-i18n="dreamRole">Seedance 2.5 视频生成与素材上传</p></div><span class="status-badge" id="dreamapi-status"></span></div>
+              <form class="key-form" data-provider="dreamapi">
+                <label for="dreamapi-key">API Key</label>
+                <div class="key-input-row"><input id="dreamapi-key" type="password" required autocomplete="off" spellcheck="false" placeholder="••••••••••••••••"><button class="primary" data-i18n="saveKey">保存密钥</button></div>
+                <div class="key-links"><a href="https://api.newportai.com/" target="_blank" rel="noopener noreferrer" data-i18n="getKey">获取密钥</a><button type="button" class="text-button remove-key" data-provider="dreamapi" data-i18n="removeKey">移除已存密钥</button></div>
+              </form>
+            </section>
+            <section class="provider-section">
+              <div class="provider-heading"><div class="provider-symbol replicate-symbol">R</div><div><h2>Replicate</h2><p data-i18n="replicateRole">人声分离、深度估计与人物分割</p></div><span class="status-badge" id="replicate-status"></span></div>
+              <form class="key-form" data-provider="replicate">
+                <label for="replicate-key">API Token</label>
+                <div class="key-input-row"><input id="replicate-key" type="password" required autocomplete="off" spellcheck="false" placeholder="••••••••••••••••"><button class="primary" data-i18n="saveKey">保存密钥</button></div>
+                <div class="key-links"><a href="https://replicate.com/account/api-tokens" target="_blank" rel="noopener noreferrer" data-i18n="getKey">获取密钥</a><button type="button" class="text-button remove-key" data-provider="replicate" data-i18n="removeKey">移除已存密钥</button></div>
+              </form>
+            </section>
+            <div class="settings-explainer"><svg><use href="#lock"/></svg><p data-i18n="keychainNote">首次保存或读取时，macOS 可能询问钥匙串访问权限。请允许本应用的 Python 访问。页面只显示配置状态，保存后不会回显密钥。</p></div>
+            <p class="field-help" data-i18n="keyBilling">保存密钥仅连接账户，实际处理会按各平台用量计费。账户需要有可用额度。</p>
+          </div>
+        </section>
+        <div class="toast" id="toast" role="status" hidden></div>
+      </main>
+    </div>
+  </div>
+  <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></symbol>
+    <symbol id="download" viewBox="0 0 24 24"><path d="M12 3v13m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol>
+    <symbol id="settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
+    <symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="9" r="5"/><path d="m12 13 8 8m-3-3 3-3m-6 0 3-3"/></symbol>
+    <symbol id="person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol>
+    <symbol id="film" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4m-4 8h4M17 8h4m-4 8h4"/></symbol>
+    <symbol id="layers" viewBox="0 0 24 24"><path d="m12 3 10 6-10 6L2 9Zm-10 12 10 6 10-6M2 15l10 6 10-6"/></symbol>
+    <symbol id="spark" viewBox="0 0 24 24"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z"/></symbol>
+    <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-11v2"/></symbol>
+    <symbol id="back" viewBox="0 0 24 24"><path d="m10 5-7 7 7 7M3 12h18"/></symbol>
+    <symbol id="lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 8 0v4m-4 5v2"/></symbol>
+  </defs></svg>
+</body>
+</html>
