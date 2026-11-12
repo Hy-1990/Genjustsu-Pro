@@ -1,6 +1,5 @@
 """Local-only Genjustsu Pro browser application."""
 from contextlib import asynccontextmanager
-import fcntl
 from pathlib import Path
 import secrets
 import shutil
@@ -15,6 +14,7 @@ from pydantic import BaseModel, Field
 import credential_store
 import jobs
 from config import ROOT
+from platform_runtime import venv_python, lock_runtime, unlock_runtime
 from mask_review import review, require_approved
 
 TOKEN = secrets.token_urlsafe(32)
@@ -23,18 +23,20 @@ mutation_lock = threading.RLock()
 
 @asynccontextmanager
 async def lifespan(app):
-    lockfile = (jobs.RUNS / ".runtime.lock").open("w")
+    lockfile = (jobs.RUNS / ".runtime.lock").open("a+b")
     try:
-        fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
+        lock_runtime(lockfile)
+    except OSError:
         lockfile.close()
         raise RuntimeError("Genjustsu Pro is already running from this project.")
-    jobs.STOP.clear()
-    jobs.recover()
-    yield
-    jobs.STOP.set()
-    fcntl.flock(lockfile, fcntl.LOCK_UN)
-    lockfile.close()
+    try:
+        jobs.STOP.clear()
+        jobs.recover()
+        yield
+    finally:
+        jobs.STOP.set()
+        unlock_runtime(lockfile)
+        lockfile.close()
 
 
 app = FastAPI(title="Genjustsu Pro", lifespan=lifespan, docs_url=None, redoc_url=None)
@@ -160,7 +162,7 @@ def create_job(video: UploadFile = File(...), mode: str = Form("depth"), subject
     suffix = Path(video.filename or "").suffix.lower()
     if suffix not in (".mp4", ".mov", ".webm"):
         raise HTTPException(400, "invalid_video")
-    if mode != "depth" and not (ROOT / ".venv-face/bin/python").is_file():
+    if mode != "depth" and not venv_python(ROOT / ".venv-face").is_file():
         raise HTTPException(400, "mesh_unavailable")
     ident = uuid.uuid4().hex
     folder = jobs.RUNS / ident

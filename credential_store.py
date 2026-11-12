@@ -1,4 +1,4 @@
-"""Application-owned secrets in macOS Keychain. Secret values never leave this module's callers."""
+"""Application-owned secrets in the native OS credential store. Secret values never leave this module's callers."""
 import sys
 import threading
 
@@ -8,10 +8,13 @@ _lock = threading.RLock()
 
 
 def _backend():
-    if sys.platform != "darwin":
-        raise RuntimeError("macOS Keychain is required by this local edition.")
-    from keyring.backends.macOS import Keyring
-    return Keyring()
+    if sys.platform == "darwin":
+        from keyring.backends.macOS import Keyring
+        return Keyring()
+    if sys.platform == "win32":
+        from keyring.backends.Windows import WinVaultKeyring
+        return WinVaultKeyring()
+    raise RuntimeError("Supported credential stores: macOS Keychain and Windows Credential Manager.")
 
 
 def get_key(provider):

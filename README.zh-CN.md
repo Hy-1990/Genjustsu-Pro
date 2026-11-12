@@ -12,7 +12,7 @@
 - 三种引导方式：深度 + SAM 人物分割、人脸网格、深度 + SAM 人物分割 + 人脸网格。
 - 使用 DreamAPI 生成视频和上传素材，直接输出 480p、720p 或 1080p。
 - 使用 Replicate 完成人声分离、视频深度估计和逐帧人物分割。
-- 页面配置 API 密钥，使用 **macOS 系统钥匙串**保存，重启后自动读取。
+- 页面配置 API 密钥，使用 **macOS 系统钥匙串或 Windows 凭据管理器**保存，重启后自动读取。
 - 输入审批绑定文件指纹。记录生成任务编号，重启后继续获取结果。
 - 完整保留源视频第一条音轨。生成时长取整产生的小幅偏差，会通过生成画面尾部补帧或裁剪对齐，并在页面提示。
 
@@ -20,7 +20,7 @@
 
 ## 安装
 
-需要 macOS、Python 3.12 及以上版本和 Rubber Band。可选的人脸网格组件使用 Python 3.12。
+macOS 需要 Python 3.12 及以上版本和 Rubber Band；Windows 安装脚本使用 Python 3.12。可选的人脸网格组件使用 Python 3.12。
 
 ```bash
 git clone https://github.com/Hy-1990/Genjustsu-Pro.git
@@ -31,6 +31,21 @@ FACE_PYTHON=python3.12 bash setup-face-mesh.sh
 ```
 
 主程序与人脸网格组件使用独立环境。安装网格组件后，两种带人脸网格的引导方式均可使用。首次使用时会下载 Google Face Landmarker 模型。
+
+### Windows
+
+安装 [Python 3.12](https://www.python.org/downloads/windows/)（包含 Python Launcher），并下载 [Rubber Band 的 Windows 命令行工具](https://breakfastquay.com/rubberband/)。解压后将工具目录加入 `PATH`，重新打开终端，确认 `rubberband --version` 可运行。
+
+在项目目录的 PowerShell 中执行：
+
+```powershell
+.\setup.cmd
+# 可选：安装人脸网格组件
+.\setup-face-mesh.cmd
+.\start.cmd
+```
+
+已有项目先执行 `git pull`，再重新运行 `setup.cmd` 并重启服务。不要把 macOS 虚拟环境复制到 Windows。密钥仍在页面填写，保存在当前登录用户的 Windows 凭据管理器，不需要管理员运行。Windows 适配已增加离线契约测试，尚未完成真实 Windows 环境的整条生成验证。
 
 ## 启动
 
@@ -57,7 +72,7 @@ PORT=8772 bash start.command
 6. 选择分辨率、检查提示词，点击**生成完整视频**。此步骤会直接提交 DreamAPI 付费生成任务。
 7. 检查并下载成片，程序会在本地恢复原始音轨。
 
-密钥只写入当前 Mac 的系统钥匙串。浏览器不保存密钥，服务端不通过接口返回密钥内容。保存密钥不会验证余额或发起付费生成。
+密钥只写入当前系统用户的 macOS 钥匙串或 Windows 凭据管理器。浏览器不保存密钥，服务端不通过接口返回密钥内容。保存密钥不会验证余额或发起付费生成。
 
 ## 使用限制与恢复
 
@@ -72,7 +87,7 @@ PORT=8772 bash start.command
 - 预处理会保存 Replicate 任务编号与已完成文件。本地中断后，点击**继续准备引导**会继续获取同一任务并复用已完成步骤；只有确认失败或取消的步骤才提供付费重试入口，需明确点击。提交结果不明时会阻止再次提交，避免重复计费。
 - 原片遮罩修复会保留已有深度遮罩的覆盖范围，并在本地补齐内部孔洞；修复后仍需检查整段引导再批准。
 - DreamAPI 任务编号可用于继续获取结果，不会自动重新提交付费生成。
-- 视频和任务记录保留在当前 Mac 的 `runs/` 目录。上传的处理素材和参考图会交由 Replicate、DreamAPI 及其存储服务处理。
+- 视频和任务记录保留在当前电脑 的 `runs/` 目录。上传的处理素材和参考图会交由 Replicate、DreamAPI 及其存储服务处理。
 
 ## 本地验证
 

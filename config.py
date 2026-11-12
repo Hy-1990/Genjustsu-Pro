@@ -1,4 +1,4 @@
-"""Non-secret defaults and macOS Keychain access."""
+"""Non-secret defaults and native OS credential access."""
 from pathlib import Path
 from credential_store import get_key
 

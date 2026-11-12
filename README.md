@@ -2,7 +2,7 @@
 
 **English** · [简体中文](README.zh-CN.md)
 
-A local macOS workspace for video character replacement. Prepare depth/mask or face-mesh motion guidance, inspect it, generate once with **DreamAPI Seedance 2.5**, then export with the original soundtrack.
+A local macOS/Windows workspace for video character replacement. Prepare depth/mask or face-mesh motion guidance, inspect it, generate once with **DreamAPI Seedance 2.5**, then export with the original soundtrack.
 
 ## Features
 
@@ -12,7 +12,7 @@ A local macOS workspace for video character replacement. Prepare depth/mask or f
 - Three preparation methods: Depth + SAM, Fast Face Mesh, and Depth + SAM + Face Mesh.
 - DreamAPI generation and media uploads, with direct 480p / 720p / 1080p output.
 - Replicate vocal separation, video depth estimation and per-frame subject segmentation.
-- API keys entered on the page and saved in **macOS Keychain**, then loaded automatically on restart.
+- API keys entered on the page and saved in **macOS Keychain or Windows Credential Manager**, then loaded automatically on restart.
 - Input approval bound to file fingerprints. Saved task IDs allow result collection to resume.
 - Complete preservation of the source video's first audio track. Small duration differences are aligned using the generated video's tail and disclosed in the interface.
 
@@ -20,7 +20,7 @@ The language switch changes interface labels only. Model instructions retain the
 
 ## Install
 
-Requires macOS, Python 3.12+, and Rubber Band. The optional mesh worker uses Python 3.12.
+macOS requires Python 3.12+ and Rubber Band. Windows setup uses Python 3.12. The optional mesh worker uses Python 3.12.
 
 ```bash
 git clone https://github.com/Hy-1990/Genjustsu-Pro.git
@@ -31,6 +31,21 @@ FACE_PYTHON=python3.12 bash setup-face-mesh.sh
 ```
 
 The main environment and mesh worker are isolated. Installing the mesh worker enables both face-mesh methods. Its Google Face Landmarker model downloads at first use.
+
+### Windows
+
+Install [Python 3.12](https://www.python.org/downloads/windows/) with the Python launcher, then download the [Rubber Band Windows command-line utility](https://breakfastquay.com/rubberband/). Extract the utility and add its folder to `PATH`; `rubberband --version` must work in a new terminal.
+
+From the project folder in PowerShell:
+
+```powershell
+.\setup.cmd
+# Optional: enable the face-mesh methods
+.\setup-face-mesh.cmd
+.\start.cmd
+```
+
+For an existing checkout, run `git pull`, then rerun `setup.cmd` and restart the service. Do not copy a macOS virtual environment to Windows. Keys are entered on the page and saved for the currently signed-in Windows user; administrator access is not required. Windows support has offline contract tests, but a real Windows generation run has not yet been verified.
 
 ## Start
 
@@ -57,7 +72,7 @@ Stop with **Ctrl+C**. Keep the local process running while processing. Closing t
 6. Select resolution, review the prompt and click **Generate finished video**. This directly submits a paid DreamAPI generation.
 7. Review and download the result. Original audio is restored locally.
 
-Keys are stored in this Mac's Keychain. They are not stored in browser storage or returned by the server. Saving a key does not check the account balance or submit a paid generation.
+Keys are stored in the current user's macOS Keychain or Windows Credential Manager. They are not stored in browser storage or returned by the server. Saving a key does not check the account balance or submit a paid generation.
 
 ## Limits and recovery
 
@@ -72,7 +87,7 @@ Keys are stored in this Mac's Keychain. They are not stored in browser storage o
 - Preparation saves Replicate prediction IDs and completed artifacts. **Continue preparation** reconnects to the same cloud tasks and reuses completed steps after a local interruption. A fresh paid retry is offered only for a confirmed failed/canceled stage and requires an explicit click. An ambiguous submission blocks resubmission until provider history is checked.
 - Original-footage mask repair preserves existing depth-mask coverage and fills enclosed holes locally. Inspect the full repaired guidance before approving it.
 - Saved DreamAPI task IDs resume result collection; there is no automatic paid re-submission.
-- Media and task metadata remain in `runs/` on this Mac. Uploaded source derivatives and references are processed by Replicate/DreamAPI and their storage providers.
+- Media and task metadata remain in `runs/` on this computer. Uploaded source derivatives and references are processed by Replicate/DreamAPI and their storage providers.
 
 ## Offline checks
 

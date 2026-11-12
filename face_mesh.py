@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+from platform_runtime import venv_python
 
 ROOT = Path(__file__).resolve().parent
 
@@ -10,9 +11,9 @@ ROOT = Path(__file__).resolve().parent
 def track(folder, *, combined=False):
     from pipeline import normalize
     folder = Path(folder)
-    interpreter = ROOT / ".venv-face/bin/python"
+    interpreter = venv_python(ROOT / ".venv-face")
     if not interpreter.is_file():
-        raise ValueError("Install the face mesh worker with setup-face-mesh.sh")
+        raise ValueError("Install the face mesh worker with setup-face-mesh.sh (macOS) or setup-face-mesh.cmd (Windows)")
     command = [str(interpreter), str(ROOT / "mesh_worker.py"), str(folder)]
     if combined:
         command.append("--depth")

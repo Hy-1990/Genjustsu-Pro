@@ -1,5 +1,5 @@
 # Genjustsu Pro
-Local macOS single-user app. Keep credentials in macOS Keychain, never configuration files.
+Local macOS/Windows single-user app. Keep credentials in macOS Keychain or Windows Credential Manager, never configuration files.
 Retain depth/SAM and face-mesh preparation with whole-clip human review.
 Use DreamAPI Seedance 2.5 directly at the chosen resolution. No draft or upgrade path.
 Keep original compressed source audio in the final export.
