@@ -3,16 +3,21 @@ from pathlib import Path
 import os,json,time,zipfile,io
 import requests
 
-def segment_raw(video,folder,prompt='person'):
-    folder=Path(folder);h={'Authorization':'Bearer '+credential('REPLICATE_API_TOKEN')}
-    with open(video,'rb') as f:r=requests.post('https://api.replicate.com/v1/files',headers=h,files={'content':f},timeout=120)
-    r.raise_for_status();url=r.json()['urls']['get']
-    payload={'version':'408f82fc20c300aac5d61d2e34ddb34cd0181e810e9f609d250aed14d5f81269','input':{'video':url,'prompt':prompt,'mask_only':True,'return_zip':True}}
-    r=requests.post('https://api.replicate.com/v1/predictions',headers=h,json=payload,timeout=60);r.raise_for_status();j=r.json();(folder/'sam-raw-request.json').write_text(json.dumps(j,indent=2));print('SAM raw-mask job:',j['id'],flush=True)
-    for _ in range(180):
-        if j['status'] in ['succeeded','failed','canceled']:break
-        time.sleep(5);r=requests.get(j['urls']['get'],headers=h,timeout=30);r.raise_for_status();j=r.json()
-    if j['status']!='succeeded':raise RuntimeError(str(j.get('error') or j['status']))
+def segment_raw(video, folder, prompt='person', status=print):
+    from replicate_jobs import submit_prediction, wait_prediction
+    folder = Path(folder)
+    headers = {'Authorization': 'Bearer ' + credential('REPLICATE_API_TOKEN')}
+    prediction_path = folder / 'sam-raw-request.json'
+    if not prediction_path.exists():
+        with open(video, 'rb') as source:
+            response = requests.post('https://api.replicate.com/v1/files', headers=headers, files={'content': source}, timeout=(10, 120))
+        response.raise_for_status()
+        url = response.json()['urls']['get']
+        submit_prediction(prediction_path, headers, {
+            'version': '408f82fc20c300aac5d61d2e34ddb34cd0181e810e9f609d250aed14d5f81269',
+            'input': {'video': url, 'prompt': prompt, 'mask_only': True, 'return_zip': True},
+        })
+    j = wait_prediction(prediction_path, headers, status)
     r=requests.get(j['output'],timeout=180);r.raise_for_status();(folder/'sam-masks.zip').write_bytes(r.content)
     out=folder/'raw-masks';out.mkdir(exist_ok=True)
     for stale in out.glob('mask_*.png'):stale.unlink()
@@ -39,4 +44,24 @@ def clean_border_fragments(folder):
         Image.fromarray(a.astype(np.uint8)*255).save(output/p.name)
         report.append({'frame':p.stem,'removed_border_pixels':removed,'mask_pixels':int(a.sum()),'left_right_edge_pixels':int(a[:,0].sum()+a[:,-1].sum())})
     (folder.parent/'mask-cleanup-report.json').write_text(json.dumps(report,indent=2))
+    return output
+
+
+def merge_repair_masks(base, repaired, output):
+    """Retain either segmentation's coverage and fill enclosed subject holes."""
+    import numpy as np
+    from PIL import Image
+    from scipy.ndimage import binary_fill_holes
+    base, repaired, output = Path(base), Path(repaired), Path(output)
+    first, second = sorted(base.glob("mask_*.png")), sorted(repaired.glob("mask_*.png"))
+    if not first or [p.name for p in first] != [p.name for p in second]:
+        raise ValueError("Frame alignment: repair masks differ")
+    output.mkdir(exist_ok=True)
+    for original, repair in zip(first, second):
+        a = np.asarray(Image.open(original).convert("L")) > 127
+        b = np.asarray(Image.open(repair).convert("L")) > 127
+        if a.shape != b.shape:
+            raise ValueError("Frame alignment: repair dimensions differ")
+        combined = binary_fill_holes(a | b)
+        Image.fromarray(combined.astype(np.uint8) * 255).save(output / original.name)
     return output

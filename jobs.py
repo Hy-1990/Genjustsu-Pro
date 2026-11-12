@@ -11,6 +11,7 @@ import requests
 
 from config import ROOT, credential
 from dreamapi import DreamAPI, ProviderError, SubmissionUncertain
+from replicate_jobs import PreparationUncertain
 from mask_review import state as review_state, require_approved
 
 RUNS = ROOT / "runs"
@@ -62,10 +63,67 @@ def inspect_video(path, *, source=False):
         return {"duration": duration, "width": stream.width, "height": stream.height}
 
 
+
+def preparation_prediction_path(folder, data, stage):
+    names = {"audio": "audio-prediction.json", "depth": "depth-prediction.json", "mask": "sam-raw-request.json"}
+    base = folder / "rgb-repair" if data.get("preparation_action") == "repair" and stage == "mask" else folder
+    return base / names.get(stage, "missing")
+
+
+def preparation_retry_stage(folder, data):
+    if data["state"] not in ("error", "interrupted"):
+        return None
+    path = preparation_prediction_path(folder, data, data.get("stage"))
+    if path.is_file():
+        prediction = json.loads(path.read_text())
+        if prediction.get("status") in ("failed", "canceled"):
+            return data["stage"]
+    return None
+
+
+def pipeline_steps(folder, data, approved):
+    mode = data["mode"]
+    completed = {
+        "input": (folder / "upload.mp4").is_file(),
+        "audio": (folder / "audio-manifest.json").is_file(),
+        "depth": (folder / "depth-raw.mp4").is_file(),
+        "mask": (folder / "mask.mp4").is_file(),
+        "mesh": (folder / "face-landmarks.json").is_file() and (folder / "composite-silent.mp4").is_file(),
+        "composite": (folder / "seedance-input.mp4").is_file(),
+        "review": approved or data["state"] in ("submitting", "generating", "done"),
+        "generate": (folder / "seedance-result.mp4").is_file(),
+        "restore": (folder / "final-preview.mp4").is_file(),
+    }
+    order = ["input", "audio", "depth", "mask", "mesh", "composite", "review", "generate", "restore"]
+    active = data.get("stage")
+    active = {"prepare": "input", "upload": "generate", "submitting": "generate"}.get(active, active)
+    result = []
+    for stage in order:
+        if stage in ("depth", "mask") and mode == "face_mesh":
+            continue
+        if stage == "mesh" and mode == "depth":
+            continue
+        state = "done" if completed[stage] else "pending"
+        if stage == active and not completed[stage]:
+            state = "error" if data["state"] in ("error", "interrupted", "uncertain") else "active"
+        if data["state"] == "repairing" and stage in ("mask", "composite"):
+            state = "active" if stage == active else "pending"
+        if stage == "review" and data["state"] == "review":
+            state = "waiting"
+        result.append({"id": stage, "state": state})
+    return result
+
 def public_job(ident):
     data = read_job(ident)
     folder = folder_for(ident)
     data["can_resume"] = data["state"] == "error" and bool(data.get("task_id") or (folder / "generation.json").exists())
+    data["can_resume_preparation"] = (
+        data["state"] in ("error", "interrupted")
+        and not data.get("task_id")
+        and any((folder / name).exists() for name in ("audio-prediction.json", "depth-prediction.json", "sam-raw-request.json"))
+        and not any(folder.rglob("*-submission.json"))
+    )
+    data["retry_preparation_stage"] = preparation_retry_stage(folder, data)
     data["task_submitted"] = (folder / "submission.json").exists() or (folder / "generation.json").exists()
     data.pop("task_id", None)
     data["files"] = [
@@ -76,6 +134,7 @@ def public_job(ident):
     data["references"] = [name for name in data.get("reference_files", []) if (folder / name).is_file()]
     if data["state"] in ("review", "ready", "error"):
         data["review"] = review_state(folder)
+    data["pipeline"] = pipeline_steps(folder, data, data.get("review", {}).get("approved", False))
     return data
 
 
@@ -106,6 +165,8 @@ def error_code(exc):
         return "provider_error"
     if isinstance(exc, requests.RequestException):
         return "network_error"
+    if isinstance(exc, PreparationUncertain):
+        return "preparation_uncertain"
     if isinstance(exc, TimeoutError):
         return "collection_timeout"
     if isinstance(exc, ValueError) and str(exc).startswith("missing_"):
@@ -139,6 +200,9 @@ def start_worker(ident, action):
 
 
 def progress(ident, message):
+    if message.startswith("cloud:"):
+        update(ident, provider_status=message.split(":", 1)[1])
+        return
     lower = message.lower()
     stage = "prepare"
     for fragment, candidate in (("audio", "audio"), ("vocal", "audio"), ("pitch", "audio"),
@@ -146,7 +210,7 @@ def progress(ident, message):
                                 ("composit", "composite"), ("mesh", "mesh")):
         if fragment in lower:
             stage = candidate
-    update(ident, stage=stage)
+    update(ident, stage=stage, provider_status=None)
 
 
 def prepare(ident):
@@ -171,11 +235,13 @@ def repair(ident):
     data = read_job(ident)
     if data["mode"] == "face_mesh":
         raise ValueError("mesh_no_mask")
-    from raw_masks import segment_raw, clean_border_fragments
+    from raw_masks import segment_raw, clean_border_fragments, merge_repair_masks
     from pipeline import composite
     from audio_workflow import prepare_seedance_video
     (folder / "rgb-repair").mkdir(exist_ok=True)
-    masks = clean_border_fragments(segment_raw(folder / "original.mp4", folder / "rgb-repair", data["subject"]))
+    masks = clean_border_fragments(segment_raw(folder / "original.mp4", folder / "rgb-repair", data["subject"], status=lambda message: progress(ident, message)))
+    masks = merge_repair_masks(folder / "clean-masks", masks, folder / "rgb-repair/merged-masks")
+    progress(ident, "composite")
     composite(folder / "original.mp4", folder / "depth.mp4", masks, folder, folder / "upload.mp4")
     if data["mode"] == "depth_mesh":
         import shutil

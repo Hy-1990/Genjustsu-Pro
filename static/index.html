@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="dark">
   <title>Genjustsu Pro</title>
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css">
-  <script src="/static/app.js" defer></script>
+  <link rel="stylesheet" href="/static/style.css?v=3">
+  <script src="/static/app.js?v=3" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -31,11 +31,15 @@
         <div id="workspace">
           <div class="page-heading"><div><h1 data-i18n="title">换一个角色，保留原有表演</h1><p data-i18n="subtitle">准备动作引导，检查后一次生成完整视频。</p></div><span class="model-label">Seedance 2.5</span></div>
           <div class="setup-notice" id="setup-notice" hidden><svg><use href="#key"/></svg><p data-i18n="setupNotice">首次使用，请先配置 DreamAPI 和 Replicate 密钥。</p><button class="text-button" id="setup-open" data-i18n="configure">去配置</button></div>
-          <ol class="steps" aria-label="Workflow">
-            <li class="current" id="step-prepare"><span>1</span><b data-i18n="stepPrepare">准备素材</b></li>
-            <li id="step-review"><span>2</span><b data-i18n="stepReview">检查引导</b></li>
-            <li id="step-generate"><span>3</span><b data-i18n="stepGenerate">生成与导出</b></li>
-          </ol>
+          <section class="execution-panel" id="execution-panel" aria-label="Execution progress" aria-live="polite">
+            <div class="execution-heading">
+              <div class="execution-state"><span class="execution-indicator" id="execution-indicator"></span><div><h2 id="execution-title" data-i18n="monitorIdle">等待输入素材</h2><p id="execution-description" data-i18n="monitorIdleCopy">配置素材后，整个处理过程会在这里实时展示。</p></div></div>
+              <div class="execution-metrics"><span id="execution-count">0 / 8</span><span id="execution-elapsed">00:00</span></div>
+            </div>
+            <div class="pipeline" id="pipeline" role="list" aria-label="Pipeline stages"></div>
+            <div class="task-progress" id="task-progress" hidden role="status"><div class="progress-head"><span class="progress-dot"></span><strong id="progress-title"></strong><span class="metadata" id="progress-time"></span></div><p id="progress-copy"></p><div class="progress-track"><span></span></div></div>
+            <div class="error-panel" id="job-error" hidden role="alert"><strong data-i18n="attention">任务需要处理</strong><p id="job-error-message"></p><button class="secondary" id="resume-prepare-button" hidden data-i18n="resumePreparation">继续准备引导</button><button class="secondary" id="resume-button" hidden data-i18n="resume">继续获取结果</button></div>
+          </section>
           <div class="workbench">
             <section class="materials" aria-labelledby="materials-title">
               <div class="panel-heading"><h2 id="materials-title" data-i18n="materials">输入素材</h2><span id="source-duration" class="metadata"></span></div>
@@ -100,7 +104,6 @@
                 </div>
               </div>
               <div class="viewer-footer"><span id="preview-caption" data-i18n="originalAudio">最终成片保留原始音轨</span><a id="download" class="text-button" download hidden><svg><use href="#download"/></svg><span data-i18n="download">下载视频</span></a></div>
-              <div class="task-progress" id="task-progress" hidden role="status"><div class="progress-head"><span class="progress-dot"></span><strong id="progress-title"></strong><span class="metadata" id="progress-time"></span></div><p id="progress-copy"></p><div class="progress-track"><span></span></div></div>
               <div class="review-panel" id="review-panel" hidden>
                 <div class="review-heading"><svg><use href="#check"/></svg><h3 data-i18n="reviewTitle">生成前，检查整段视频</h3></div>
                 <p data-i18n="reviewCopy">确认头发、手和衣服都在遮罩内，背景没有被误选；人脸网格需全程贴合。听一下人声与动作是否同步。</p>
@@ -109,7 +112,6 @@
                 <p class="field-help" id="repair-hint" data-i18n="repairHint">重新分割会额外调用 Replicate，完成后需要再次检查。</p>
               </div>
               <div class="approved-note" id="approved-note" hidden><svg><use href="#check"/></svg><span data-i18n="approved">引导已批准，可以生成。</span></div>
-              <div class="error-panel" id="job-error" hidden role="alert"><strong data-i18n="attention">任务需要处理</strong><p id="job-error-message"></p><button class="secondary" id="resume-button" hidden data-i18n="resume">继续获取结果</button></div>
               <div class="result-note" id="result-note" hidden><svg><use href="#check"/></svg><div><h3 data-i18n="resultReady">成片已就绪</h3><p data-i18n="resultCopy">原始音轨已恢复。播放检查人物、动作和口型后即可下载。</p><p class="field-help" id="duration-note" hidden data-i18n="durationNote">已微调生成画面的尾部时长以匹配原片，原始音轨保持完整。</p></div></div>
               <div class="workflow-note"><svg><use href="#info"/></svg><p data-i18n="workflowNote">预处理使用 Replicate，视频生成使用 DreamAPI。每次生成直接输出所选分辨率。</p></div>
             </section>

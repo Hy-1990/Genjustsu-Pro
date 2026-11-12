@@ -55,7 +55,7 @@ async def local_access(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "no-referrer"
     response.headers["X-Frame-Options"] = "DENY"
-    if request.url.path.startswith("/api/"):
+    if request.url.path.startswith(("/api/", "/static/")):
         response.headers["Cache-Control"] = "no-store"
     return response
 
@@ -219,7 +219,7 @@ def repair_input(ident: str):
             raise HTTPException(400, "mesh_no_mask")
         if data["state"] not in ("review", "ready") or (jobs.folder_for(ident) / "submission.json").exists():
             raise HTTPException(409, "job_busy")
-        jobs.update(ident, state="repairing", stage="mask", error=None)
+        jobs.update(ident, state="repairing", stage="mask", error=None, preparation_action="repair")
         jobs.start_worker(ident, lambda: jobs.repair(ident))
     return {"state": "repairing"}
 
@@ -275,6 +275,47 @@ def generate(
                     reference_files=references, state="submitting", stage="upload", error=None)
         jobs.start_worker(ident, lambda: jobs.generate(ident))
     return {"state": "submitting"}
+
+
+@app.post("/api/jobs/{ident}/retry-preparation")
+def retry_preparation(ident: str):
+    require_key("replicate")
+    with mutation_lock:
+        data = jobs.public_job(ident)
+        stage = data["retry_preparation_stage"]
+        if not stage or data["task_submitted"] or not data["can_resume_preparation"]:
+            raise HTTPException(409, "job_busy")
+        folder = jobs.folder_for(ident)
+        from replicate_jobs import get_response, read_prediction, save_prediction
+        from config import credential
+        path = jobs.preparation_prediction_path(folder, data, stage)
+        saved = read_prediction(path)
+        latest = get_response(saved["urls"]["get"], {"Authorization": "Bearer " + credential("REPLICATE_API_TOKEN")}).json()
+        save_prediction(path, latest)
+        if latest.get("status") not in ("failed", "canceled"):
+            raise HTTPException(409, "job_busy")
+        archive = folder / "attempts"
+        archive.mkdir(exist_ok=True)
+        path.replace(archive / (path.stem + "-" + uuid.uuid4().hex + ".json"))
+        state = "repairing" if data.get("preparation_action") == "repair" else "preparing"
+        action = jobs.repair if state == "repairing" else jobs.prepare
+        jobs.update(ident, state=state, stage="mask" if state == "repairing" else "prepare", error=None, provider_status=None)
+        jobs.start_worker(ident, lambda: action(ident))
+    return {"state": state}
+
+
+@app.post("/api/jobs/{ident}/resume-preparation")
+def resume_preparation(ident: str):
+    require_key("replicate")
+    with mutation_lock:
+        data = jobs.public_job(ident)
+        if not data["can_resume_preparation"] or data["task_submitted"]:
+            raise HTTPException(409, "job_busy")
+        state = "repairing" if data.get("preparation_action") == "repair" else "preparing"
+        action = jobs.repair if state == "repairing" else jobs.prepare
+        jobs.update(ident, state=state, stage="mask" if state == "repairing" else "prepare", error=None, provider_status=None)
+        jobs.start_worker(ident, lambda: action(ident))
+    return {"state": state}
 
 
 @app.post("/api/jobs/{ident}/resume")

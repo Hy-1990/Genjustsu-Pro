@@ -6,6 +6,7 @@ A local macOS workspace for video character replacement. Prepare depth/mask or f
 
 ## Features
 
+- Dark workbench with a persistent execution monitor, real processing stages, loading states, visible errors and recovery actions.
 - Chinese and English interface, recent tasks, and original / guidance / depth / mask / result previews.
 - Three preparation methods: Depth + SAM, Fast Face Mesh, and Depth + SAM + Face Mesh.
 - DreamAPI generation and media uploads, with direct 480p / 720p / 1080p output.
@@ -67,7 +68,9 @@ Keys are stored in this Mac's Keychain. They are not stored in browser storage o
 - The generation adapter follows the DreamAPI skill's current Seedance 2.5 multimodal input contract. Real-person reference support was confirmed by the platform owner. Output quality depends on the provider and inputs.
 - Small output/source duration differences up to 1.1 seconds are aligned locally. Larger mismatches stop export rather than cutting the original soundtrack.
 - If submission times out without a task ID, the interface blocks repeat submission. Check DreamAPI's task history and billing before deliberately creating another task.
-- Saved task IDs resume collection; there is no automatic paid re-submission. After a preparation interruption, check Replicate's task history before repeating preparation.
+- Preparation saves Replicate prediction IDs and completed artifacts. **Continue preparation** reconnects to the same cloud tasks and reuses completed steps after a local interruption. A fresh paid retry is offered only for a confirmed failed/canceled stage and requires an explicit click. An ambiguous submission blocks resubmission until provider history is checked.
+- Original-footage mask repair preserves existing depth-mask coverage and fills enclosed holes locally. Inspect the full repaired guidance before approving it.
+- Saved DreamAPI task IDs resume result collection; there is no automatic paid re-submission.
 - Media and task metadata remain in `runs/` on this Mac. Uploaded source derivatives and references are processed by Replicate/DreamAPI and their storage providers.
 
 ## Offline checks
@@ -80,7 +83,7 @@ Keys are stored in this Mac's Keychain. They are not stored in browser storage o
 
 Tests use isolated jobs and mocked providers. They verify secret handling, review invalidation, submission contracts, ambiguous submissions, collection recovery, source-audio packet preservation and duration alignment. They do not submit paid generations.
 
-The initial release was locally checked on macOS ARM64, Python 3.14.3 with a Python 3.12 mesh worker. Live cloud generation and account billing require your own test.
+The initial release was locally checked on macOS ARM64, Python 3.14.3 with a Python 3.12 mesh worker. A live 29.9-second Depth + SAM / image-reference / 720p workflow has also been verified through generation, original-audio restoration, playback, download and same-task restart recovery; see [verification details](docs/verification.md). Other media, modes and resolutions still need their own quality checks.
 
 ## Attribution and license
 

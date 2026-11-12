@@ -7,7 +7,7 @@ const copy = {
   zh: {
     newTask: "新建任务", recent: "最近任务", historyEmpty: "任务会保留在这里，随时回来继续。",
     localWorkspace: "本地工作空间", workspace: "视频换角工作台", settings: "密钥设置",
-    title: "换一个角色，保留原有表演", subtitle: "准备动作引导，检查后一次生成完整视频。",
+    title: "视频换角工作台", subtitle: "素材准备、动作引导、角色生成，在一条可恢复的工作流里完成。",
     setupNotice: "首次使用，请先配置 DreamAPI 和 Replicate 密钥。", configure: "去配置",
     stepPrepare: "准备素材", stepReview: "检查引导", stepGenerate: "生成与导出",
     materials: "输入素材", sourceVideo: "原始视频", required: "必填", chooseVideo: "选择或拖入视频",
@@ -48,6 +48,19 @@ const copy = {
     stage_mask: "正在分割人物", stage_composite: "正在合成动作引导", stage_mesh: "正在追踪面部动作",
     stage_upload: "正在上传生成素材", stage_submitting: "正在提交生成任务", stage_generate: "Seedance 正在生成视频",
     stage_restore: "正在恢复原始音轨", stage_review: "等待检查引导", stage_done: "视频已就绪",
+    monitorIdle: "等待输入素材", monitorIdleCopy: "配置素材后，整个处理过程会在这里实时展示。",
+    monitorUploading: "正在上传原始素材", monitorUploadingCopy: "正在创建任务并读取视频，页面会自动显示后续进度。",
+    monitorReview: "动作引导已就绪，等待你的检查", monitorReady: "引导已批准，可以生成",
+    monitorError: "处理已暂停 · 已完成步骤已保留", monitorDone: "成片已就绪",
+    step_input: "素材上传", step_audio: "人声分离", step_depth: "深度估计", step_mask: "人物分割",
+    step_mesh: "面部追踪", step_composite: "引导合成", step_review: "检查批准", step_generate: "角色生成", step_restore: "原声恢复",
+    stepState_waiting: "待检查", stepState_done: "已完成", stepState_active: "处理中", stepState_error: "需处理", stepState_pending: "等待",
+    preparingAction: "正在准备…", generatingAction: "正在生成…",
+    retryPreparation: "重试失败步骤", retryChargeConfirm: "仅重试已明确失败的当前步骤。已完成结果会复用，本次模型重试可能再次计费。继续吗？",
+    resumePreparation: "继续准备引导",
+    cloudQueued: "Replicate 已接受任务，正在排队或启动模型。此时请求成功不代表视频已处理完成。",
+    cloudRunning: "Replicate 模型正在处理视频。时长取决于原片长度和模型运行速度。",
+    error_preparation_uncertain: "预处理提交结果尚未确认。请先核对 Replicate 任务记录，确认后再决定下一步。",
     preparingCopy: "保留原片的动作与时间节奏。处理期间可以切换到其他任务。",
     generatingCopy: "通常需要数分钟。关闭页面后可重新打开任务，程序会继续获取同一结果。",
     repairingCopy: "使用原始画面细节修复遮罩，完成后请重新检查整段引导。",
@@ -88,7 +101,7 @@ const copy = {
   en: {
     newTask: "New task", recent: "Recent tasks", historyEmpty: "Your tasks stay here, ready to pick up later.",
     localWorkspace: "Local workspace", workspace: "Character replacement", settings: "API keys",
-    title: "New character. Same performance.", subtitle: "Prepare motion guidance, review it, then generate a finished video.",
+    title: "Character replacement studio", subtitle: "Prepare, inspect and generate with a workflow you can resume.",
     setupNotice: "Connect DreamAPI and Replicate to start your first task.", configure: "Connect",
     stepPrepare: "Prepare input", stepReview: "Review guidance", stepGenerate: "Generate & export",
     materials: "Input materials", sourceVideo: "Source video", required: "Required",
@@ -132,6 +145,19 @@ const copy = {
     stage_mesh: "Tracking facial motion", stage_upload: "Uploading generation inputs", stage_submitting: "Submitting the generation",
     stage_generate: "Seedance is generating your video", stage_restore: "Restoring original audio",
     stage_review: "Awaiting guidance review", stage_done: "Video ready",
+    monitorIdle: "Ready for your source", monitorIdleCopy: "Every processing stage will appear here once you start.",
+    monitorUploading: "Uploading source material", monitorUploadingCopy: "Creating the task and reading your clip. Progress will appear automatically.",
+    monitorReview: "Guidance ready for your review", monitorReady: "Guidance approved. Ready to generate.",
+    monitorError: "Processing paused · completed steps saved", monitorDone: "Your video is ready",
+    step_input: "Upload", step_audio: "Vocals", step_depth: "Depth", step_mask: "Masks",
+    step_mesh: "Face tracking", step_composite: "Guidance", step_review: "Approve", step_generate: "Generate", step_restore: "Audio restore",
+    stepState_waiting: "Review needed", stepState_done: "Complete", stepState_active: "Processing", stepState_error: "Attention", stepState_pending: "Waiting",
+    preparingAction: "Preparing…", generatingAction: "Generating…",
+    retryPreparation: "Retry failed stage", retryChargeConfirm: "Retry only the confirmed failed stage. Completed results are reused. The model retry may incur a new charge. Continue?",
+    resumePreparation: "Resume preparation",
+    cloudQueued: "Replicate accepted the task and is queuing or starting the model. A successful request does not mean the video is ready.",
+    cloudRunning: "Replicate is processing the video. Runtime depends on clip length and the model.",
+    error_preparation_uncertain: "The preparation submission outcome is unclear. Check Replicate task history before deciding what to do next.",
     preparingCopy: "Preserving the source motion and timing. You can switch to other tasks while processing.",
     generatingCopy: "This usually takes a few minutes. Reopen this task to collect the same result if you close the page.",
     repairingCopy: "Repairing masks with details from the original footage. Review the full guidance again afterward.",
@@ -185,6 +211,7 @@ let pollTimer;
 let toastTimer;
 let historyItems = [];
 let actionBusy = false;
+let renderedPipelineKey = "";
 const runningStates = ["preparing", "repairing", "submitting", "generating"];
 const t = (key) => copy[language][key] || copy[language].error_processing_error;
 
@@ -275,7 +302,8 @@ async function refreshHistory() {
 }
 
 function mediaURL(filename) {
-  return "/api/jobs/" + jobId + "/files/" + encodeURIComponent(filename);
+  const version = ["seedance-input.mp4", "mask.mp4"].includes(filename) ? job?.review?.fingerprint : "";
+  return "/api/jobs/" + jobId + "/files/" + encodeURIComponent(filename) + (version ? "?v=" + encodeURIComponent(version) : "");
 }
 
 function setPreview(filename) {
@@ -317,8 +345,16 @@ function renderLocalSource() {
 }
 
 function renderJob() {
+  renderExecution();
+  const selectedReference = $("#reference-file").files[0];
+  const savedReference = job?.references?.some(name => name.startsWith("reference-1"));
+  $("#reference-name").textContent = selectedReference?.name || t(savedReference ? "savedReference" : "chooseReference");
   $("#workspace").classList.toggle("has-guidance", Boolean(job?.files.includes("seedance-input.mp4")));
   const busy = Boolean(job && runningStates.includes(job.state));
+  $("#prepare-button span").textContent = t(busy && ["preparing", "repairing"].includes(job.state) ? "preparingAction" : "prepare");
+  $("#generate-button span").textContent = t(busy && ["submitting", "generating"].includes(job.state) ? "generatingAction" : "generate");
+  $("#prepare-button").setAttribute("aria-busy", String(actionBusy || busy));
+  $("#generate-button").setAttribute("aria-busy", String(actionBusy || busy));
   $("#prepare-button").disabled = actionBusy || busy || Boolean(job) || !keys.replicate;
   $("#source-file").disabled = Boolean(job);
   $("#mode").disabled = Boolean(job);
@@ -343,13 +379,14 @@ function renderJob() {
     $("#job-error-message").textContent = (providerError ? provider + " · " : "") + t("error_" + job.error);
   }
   $("#resume-button").hidden = !job?.can_resume;
+  $("#resume-prepare-button").hidden = !job?.can_resume_preparation;
+  $("#resume-prepare-button").textContent = t(job?.retry_preparation_stage ? "retryPreparation" : "resumePreparation");
   $("#repair-button").hidden = job?.mode === "face_mesh";
   $("#repair-hint").hidden = job?.mode === "face_mesh";
   $("#duration-note").hidden = !job?.duration_adjusted;
   if (!job) {
     $("#source-duration").textContent = "";
-    updateSteps(0);
-    return;
+      return;
   }
   $("#source-name").textContent = job.name;
   $("#source-name").title = t("sourceLocked");
@@ -359,10 +396,12 @@ function renderJob() {
   $("#progress-title").textContent = t("stage_" + job.stage);
   $("#progress-copy").textContent = t(job.state === "repairing" ? "repairingCopy" :
     ["submitting", "generating"].includes(job.state) ? "generatingCopy" : "preparingCopy");
+  if (["preparing", "repairing"].includes(job.state)) {
+    if (job.provider_status === "starting") $("#progress-copy").textContent = t("cloudQueued");
+    if (job.provider_status === "processing") $("#progress-copy").textContent = t("cloudRunning");
+  }
   const elapsed = Math.max(0, Math.floor((Date.now() - Date.parse(job.created_at)) / 1000));
   $("#progress-time").textContent = Math.floor(elapsed / 60) + ":" + String(elapsed % 60).padStart(2, "0");
-  updateSteps(["preparing", "repairing", "interrupted"].includes(job.state) ? 0 :
-    ["review", "ready"].includes(job.state) ? 1 : 2);
   const files = [
     ["upload.mp4", "original"], ["seedance-input.mp4", "guidance"],
     ["depth.mp4", "depth"], ["mask.mp4", "mask"], ["final-preview.mp4", "result"]
@@ -389,12 +428,71 @@ function renderJob() {
   }
 }
 
-function updateSteps(current) {
-  ["prepare", "review", "generate"].forEach((step, index) => {
-    $("#step-" + step).classList.toggle("current", index === current);
-    $("#step-" + step).classList.toggle("passed", index < current);
-  });
+function renderExecution() {
+  const busy = Boolean(job && runningStates.includes(job.state));
+  const failed = Boolean(job?.error);
+  $("#execution-panel").classList.toggle("is-running", busy || actionBusy);
+  $("#execution-panel").classList.toggle("has-error", failed);
+  $("#execution-indicator").classList.toggle("spinning", busy || actionBusy);
+  let title = t("monitorIdle");
+  let description = t("monitorIdleCopy");
+  if (actionBusy && !job) {
+    title = t("monitorUploading");
+    description = t("monitorUploadingCopy");
+  } else if (job) {
+    title = failed ? t("monitorError") : job.state === "done" ? t("monitorDone") :
+      job.state === "review" ? t("monitorReview") : job.state === "ready" ? t("monitorReady") : t("stage_" + job.stage);
+    description = job.name;
+    if (job.provider_status === "starting") description = t("cloudQueued");
+    if (job.provider_status === "processing") description = t("cloudRunning");
+  }
+  $("#execution-title").textContent = title;
+  $("#execution-description").textContent = description;
+  const fallback = ["input", "audio", "depth", "mask", "composite", "review", "generate", "restore"].map(id => ({id, state: "pending"}));
+  const stages = job?.pipeline || fallback;
+  $("#execution-count").textContent = stages.filter(stage => stage.state === "done").length + " / " + stages.length;
+  const pipelineKey = JSON.stringify([jobId, language, stages]);
+  if (pipelineKey !== renderedPipelineKey) {
+  renderedPipelineKey = pipelineKey;
+  const strip = $("#pipeline");
+  const previousScroll = strip.scrollLeft;
+  strip.replaceChildren();
+  for (const stage of stages) {
+    const item = document.createElement("div");
+    item.className = "pipeline-stage " + stage.state;
+    item.setAttribute("role", "listitem");
+    const indicator = document.createElement("span");
+    indicator.className = "stage-indicator";
+    indicator.setAttribute("aria-hidden", "true");
+    const text = document.createElement("span");
+    text.className = "stage-text";
+    const label = document.createElement("strong");
+    label.textContent = t("step_" + stage.id);
+    const state = document.createElement("small");
+    state.textContent = t("stepState_" + stage.state);
+    text.append(label, state);
+    item.append(indicator, text);
+    strip.append(item);
+  }
+  strip.scrollLeft = previousScroll;
+  const current = strip.querySelector(".error, .active, .waiting");
+  if (current && strip.scrollWidth > strip.clientWidth) {
+    const relativeLeft = current.getBoundingClientRect().left - strip.getBoundingClientRect().left;
+    strip.scrollLeft += relativeLeft - (strip.clientWidth - current.offsetWidth) / 2;
+  }
+  }
+  renderElapsed();
 }
+
+function renderElapsed() {
+  let seconds = 0;
+  if (job) {
+    const end = runningStates.includes(job.state) ? Date.now() : Date.parse(job.updated_at || job.created_at);
+    seconds = Math.max(0, Math.floor((end - Date.parse(job.created_at)) / 1000));
+  }
+  $("#execution-elapsed").textContent = String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0");
+}
+setInterval(renderElapsed, 1000);
 
 async function pollJob(ident) {
   clearTimeout(pollTimer);
@@ -421,7 +519,7 @@ function clearFiles() {
   $("#reference-file").value = "";
   $("#second-reference").value = "";
   $("#reference-image").hidden = true;
-  $("#reference-icon").hidden = false;
+  $("#reference-icon").toggleAttribute("hidden", false);
   $("#reference-name").textContent = t("chooseReference");
   $("#second-name").textContent = "";
   $("#preview-video").pause();
@@ -456,7 +554,7 @@ async function selectJob(ident) {
     if (/\.(png|jpe?g|webp)$/i.test(reference)) {
       $("#reference-image").src = mediaURL(reference);
       $("#reference-image").hidden = false;
-      $("#reference-icon").hidden = true;
+      $("#reference-icon").toggleAttribute("hidden", true);
     }
   }
   updatePromptCount();
@@ -522,7 +620,7 @@ $("#reference-file").onchange = () => {
   if (referenceURL) URL.revokeObjectURL(referenceURL);
   const image = /\.(png|jpe?g|webp)$/i.test(file.name);
   $("#reference-image").hidden = !image;
-  $("#reference-icon").hidden = image;
+  $("#reference-icon").toggleAttribute("hidden", image);
   if (image) {
     referenceURL = URL.createObjectURL(file);
     $("#reference-image").src = referenceURL;
@@ -613,6 +711,16 @@ $("#generate-form").onsubmit = async (event) => {
     renderJob();
   }
 };
+$("#resume-prepare-button").onclick = async () => {
+  if (job?.retry_preparation_stage && !confirm(t("retryChargeConfirm"))) return;
+  $("#resume-prepare-button").disabled = true;
+  try {
+    await api("/api/jobs/" + jobId + (job?.retry_preparation_stage ? "/retry-preparation" : "/resume-preparation"), {method: "POST"});
+    await pollJob(jobId);
+  } catch (error) { toast(errorMessage(error)); }
+  finally { $("#resume-prepare-button").disabled = false; }
+};
+
 $("#resume-button").onclick = async () => {
   $("#resume-button").disabled = true;
   try {

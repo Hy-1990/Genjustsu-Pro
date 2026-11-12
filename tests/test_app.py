@@ -103,6 +103,63 @@ class LocalAppTests(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["detail"], "keys_required")
 
+    def test_preparation_resume_reuses_saved_tasks_and_blocks_ambiguous_submit(self):
+        self.secrets["replicate"] = "test-key"
+        ident, folder = self.make_job(False)
+        jobs.write_json(folder / "depth-prediction.json", {"id": "existing", "status": "processing"})
+        jobs.update(ident, state="error", stage="depth", error="network_error")
+        with patch("jobs.start_worker") as worker:
+            result = self.client.post(f"/api/jobs/{ident}/resume-preparation", headers=self.headers)
+        self.assertEqual(result.status_code, 200)
+        worker.assert_called_once()
+        self.assertEqual(json.loads((folder / "depth-prediction.json").read_text())["id"], "existing")
+        jobs.update(ident, state="error", error="preparation_uncertain")
+        jobs.write_json(folder / "sam-raw-request-submission.json", {"attempted_at": 1})
+        with patch("jobs.start_worker") as worker:
+            result = self.client.post(f"/api/jobs/{ident}/resume-preparation", headers=self.headers)
+        self.assertEqual(result.status_code, 409)
+        worker.assert_not_called()
+
+    def test_paid_stage_retry_requires_confirmed_failure_and_no_ambiguous_submit(self):
+        from unittest.mock import Mock
+        self.secrets["replicate"] = "test-key"
+        ident, folder = self.make_job(False)
+        saved = {"id": "existing", "status": "failed", "urls": {"get": "https://api.replicate.com/v1/predictions/existing"}}
+        jobs.write_json(folder / "depth-prediction.json", saved)
+        jobs.update(ident, state="error", stage="depth", error="processing_error")
+        response = Mock(); response.json.return_value = {**saved, "status": "processing"}
+        with patch("replicate_jobs.get_response", return_value=response), patch("jobs.start_worker") as worker:
+            result = self.client.post(f"/api/jobs/{ident}/retry-preparation", headers=self.headers)
+        self.assertEqual(result.status_code, 409)
+        worker.assert_not_called()
+        jobs.write_json(folder / "depth-prediction.json", saved)
+        jobs.write_json(folder / "sam-raw-request-submission.json", {"attempted_at": 1})
+        with patch("replicate_jobs.get_response") as get, patch("jobs.start_worker") as worker:
+            result = self.client.post(f"/api/jobs/{ident}/retry-preparation", headers=self.headers)
+        self.assertEqual(result.status_code, 409)
+        worker.assert_not_called(); get.assert_not_called()
+
+    def test_repair_resume_keeps_the_repair_path(self):
+        self.secrets["replicate"] = "test-key"
+        ident, folder = self.make_job(False)
+        jobs.write_json(folder / "depth-prediction.json", {"id": "saved"})
+        jobs.update(ident, state="error", stage="mask", error="network_error", preparation_action="repair")
+        with patch("jobs.start_worker") as worker, patch("jobs.repair") as repair:
+            result = self.client.post(f"/api/jobs/{ident}/resume-preparation", headers=self.headers)
+            worker.call_args.args[1]()
+        self.assertEqual(result.json()["state"], "repairing")
+        repair.assert_called_once_with(ident)
+        self.assertEqual(jobs.preparation_prediction_path(folder, jobs.read_job(ident), "mask"), folder / "rgb-repair/sam-raw-request.json")
+
+    def test_review_waits_for_human_and_repair_does_not_show_old_mask_as_done(self):
+        ident, folder = self.make_job(False)
+        stages = {item["id"]: item["state"] for item in jobs.public_job(ident)["pipeline"]}
+        self.assertEqual(stages["review"], "waiting")
+        jobs.update(ident, state="repairing", stage="mask")
+        stages = {item["id"]: item["state"] for item in jobs.public_job(ident)["pipeline"]}
+        self.assertEqual(stages["mask"], "active")
+        self.assertEqual(stages["composite"], "pending")
+
     def test_preparing_job_exposes_no_partial_review(self):
         ident, folder = self.make_job(False)
         jobs.update(ident, state="preparing")

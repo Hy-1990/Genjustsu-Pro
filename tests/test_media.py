@@ -37,3 +37,18 @@ class MediaTests(unittest.TestCase):
     for i in range(2):put(c,s,np.zeros((64,64,3),dtype=np.uint8),i)
     finish(c,s)
    with self.assertRaisesRegex(ValueError,'Frame alignment'):composite(p/'original.mp4',p/'depth.mp4',p/'masks',p)
+
+class RepairMaskTests(unittest.TestCase):
+ def test_union_retains_clothes_and_fills_internal_hand_holes(self):
+  from PIL import Image
+  from raw_masks import merge_repair_masks
+  with tempfile.TemporaryDirectory() as directory:
+   p=Path(directory);(p/'base').mkdir();(p/'repair').mkdir()
+   a=np.zeros((20,20),dtype=np.uint8);a[3:18,4:16]=255;a[8:11,8:11]=0
+   b=np.zeros_like(a);b[2:8,5:15]=255
+   Image.fromarray(a).save(p/'base/mask_00000.png');Image.fromarray(b).save(p/'repair/mask_00000.png')
+   result=merge_repair_masks(p/'base',p/'repair',p/'merged')
+   mask=np.asarray(Image.open(result/'mask_00000.png'))
+   self.assertTrue(np.all(mask[8:11,8:11]==255))
+   self.assertEqual(mask[16,5],255)
+   self.assertEqual(mask[0,0],0)

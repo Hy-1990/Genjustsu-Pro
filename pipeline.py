@@ -51,23 +51,34 @@ def depth_hf(src,dst):
     result=c.predict({'video':handle_file(str(src))},max_len=-1,target_fps=24,max_res=960,grayscale=False,api_name='/infer_video_depth')
     shutil.copy(file_path(result[1]),dst)
 
-def depth_replicate(src,dst,model_name="lucataco/depth-anything-video"):
-    token=credential('REPLICATE_API_TOKEN')
-    if not token:raise ValueError('Replicate fallback requires REPLICATE_API_TOKEN in the server environment.')
-    # Resolve live model schema instead of assuming an input field.
-    headers={'Authorization':f'Bearer {token}'}
-    r=requests.get('https://api.replicate.com/v1/models/'+model_name,headers=headers,timeout=30);r.raise_for_status();model=r.json();v=model['latest_version'];props=v['openapi_schema']['components']['schemas']['Input']['properties']
-    key=next((k for k in props if 'video' in k and props[k].get('format')=='uri'),None)
-    if not key:raise ValueError('Unable to identify Replicate video input in schema.')
-    with open(src,'rb') as f:r=requests.post('https://api.replicate.com/v1/files',headers=headers,files={'content':f},timeout=120)
-    r.raise_for_status();url=r.json()['urls']['get']
-    r=requests.post('https://api.replicate.com/v1/predictions',headers=headers,json={'version':v['id'],'input':{key:url}},timeout=60);r.raise_for_status();j=r.json()
-    for _ in range(180):
-        if j['status'] in ['succeeded','failed','canceled']:break
-        time.sleep(5);r=requests.get(j['urls']['get'],headers=headers,timeout=30);r.raise_for_status();j=r.json()
-    if j['status']!='succeeded':raise RuntimeError(str(j.get('error') or j['status']))
-    output=j['output'];url=output if isinstance(output,str) else output[0] if isinstance(output,list) else next(v for k,v in output.items() if 'depth' in k)
-    r=requests.get(url,timeout=120);r.raise_for_status();Path(dst).write_bytes(r.content)
+def depth_replicate(src, dst, model_name="lucataco/depth-anything-video", status=print):
+    from replicate_jobs import get_response, submit_prediction, wait_prediction
+    if Path(dst).is_file():
+        return
+    token = credential("REPLICATE_API_TOKEN")
+    headers = {"Authorization": "Bearer " + token}
+    prediction_path = Path(dst).parent / "depth-prediction.json"
+    if not prediction_path.exists():
+        model = get_response("https://api.replicate.com/v1/models/" + model_name, headers).json()
+        version = model["latest_version"]
+        properties = version["openapi_schema"]["components"]["schemas"]["Input"]["properties"]
+        key = next((name for name in properties if "video" in name and properties[name].get("format") == "uri"), None)
+        if not key:
+            raise ValueError("Unable to identify the depth model video input")
+        with open(src, "rb") as source:
+            response = requests.post("https://api.replicate.com/v1/files", headers=headers, files={"content": source}, timeout=(10, 120))
+        response.raise_for_status()
+        url = response.json()["urls"]["get"]
+        submit_prediction(prediction_path, headers, {"version": version["id"], "input": {key: url}})
+    prediction = wait_prediction(prediction_path, headers, status)
+    output = prediction["output"]
+    url = output if isinstance(output, str) else output[0] if isinstance(output, list) else next(value for key, value in output.items() if "depth" in key)
+    response = requests.get(url, timeout=(10, 120))
+    response.raise_for_status()
+    temporary = Path(dst).with_suffix(".partial.mp4")
+    temporary.write_bytes(response.content)
+    temporary.replace(dst)
+
 
 def grayscale(src,dst,inferno=False):
     out=s=None
@@ -128,14 +139,19 @@ def run(src,directory,prompt='person',provider='replicate',status=print):
     directory=Path(directory);directory.mkdir(parents=True,exist_ok=True)
     from audio_workflow import separate
     separate(src,directory,status)
-    status('Preparing video · 24 fps');meta=normalize(src,directory/'original.mp4')
+    status('Preparing video · 24 fps')
+    if (directory/'original.mp4').exists():
+        with av.open(str(directory/'original.mp4')) as prepared:
+            stream=prepared.streams.video[0]
+            meta={'frames':stream.frames,'fps':24,'width':stream.width,'height':stream.height,'duration':float(stream.duration*stream.time_base)}
+    else:meta=normalize(src,directory/'original.mp4')
     status('Video Depth Anything · generating depth')
     if provider=='huggingface':depth_hf(directory/'original.mp4',directory/'depth-raw.mp4')
-    else:depth_replicate(directory/'original.mp4',directory/'depth-raw.mp4', 'chenxwh/depth-any-video' if provider=='replicate-chenxwh' else 'lucataco/depth-anything-video')
+    else:depth_replicate(directory/'original.mp4',directory/'depth-raw.mp4', 'chenxwh/depth-any-video' if provider=='replicate-chenxwh' else 'lucataco/depth-anything-video', status=status)
     shutil.copyfile(directory/'depth-raw.mp4',directory/'depth.mp4')
     status('SAM 3 · segmenting the depth subject')
     from raw_masks import segment_raw,clean_border_fragments
-    raw_dir=clean_border_fragments(segment_raw(directory/'depth.mp4',directory,prompt))
+    raw_dir=clean_border_fragments(segment_raw(directory/'depth.mp4',directory,prompt,status=status))
     status('Compositing · depth subject over original background')
     composite(directory/'original.mp4',directory/'depth.mp4',raw_dir,directory,src)
     from audio_workflow import prepare_seedance_video
