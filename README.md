@@ -18,49 +18,78 @@ A local macOS/Windows workspace for video character replacement. Prepare depth/m
 
 The language switch changes interface labels only. Model instructions retain the original upstream wording. User-entered and saved prompts are not translated when switching languages.
 
-## Install
+## Install and start
 
-macOS requires Python 3.12+ and Rubber Band. Windows setup uses Python 3.12. The optional mesh worker uses Python 3.12.
+### Windows: first installation
+
+1. Install [Git for Windows](https://git-scm.com/download/win) and [Python 3.12](https://www.python.org/downloads/windows/). Include the **Python Launcher** and select **Add python.exe to PATH**.
+2. Download the [Rubber Band Windows command-line utility](https://breakfastquay.com/rubberband/) (Windows executable). Extract it to a permanent folder, for example `C:\Tools\rubberband`. In Windows, open **Edit environment variables for your account**, edit the user `Path`, and add the folder containing `rubberband.exe`. Add the folder, not the ZIP or executable path.
+3. Open a new PowerShell window and check both commands:
+
+   ```powershell
+   py -3.12 --version
+   rubberband --version
+   ```
+
+4. In the folder where you want to keep the project, run:
+
+   ```powershell
+   git clone https://github.com/Hy-1990/Genjustsu-Pro.git
+   cd Genjustsu-Pro
+   .\setup.cmd
+   .\start.cmd
+   ```
+
+5. Open **http://127.0.0.1:8771** after the server starts. Keep the terminal running. Stop with **Ctrl+C**.
+6. Optional: stop the service, run `.\setup-face-mesh.cmd`, then restart with `.\start.cmd` to enable both face-mesh methods. Depth + SAM does not require this component. The Google Face Landmarker model downloads at first use.
+
+### Windows: update an existing installation
+
+Stop the old service with **Ctrl+C**, then run from the project folder:
+
+```powershell
+git pull
+.\setup.cmd
+.\start.cmd
+```
+
+For ZIP downloads, extract the latest GitHub ZIP into a new directory and follow the first-install instructions. Keep the old `runs/` folder, which may contain task history and media. Do not copy macOS `.venv` or `.venv-face` environments to Windows.
+
+Refresh the browser, open **API keys**, enter and save the DreamAPI API Key and Replicate API Token separately. Both should show **Configured**. Keys are saved in the signed-in user's **Windows Credential Manager** and loaded on restart. No administrator access or configuration-file editing is required.
+
+### Windows: daily use and troubleshooting
+
+From the project folder:
+
+```powershell
+.\start.cmd
+```
+
+- Python or `py` not found: install Python 3.12 with the Python Launcher, then open a new terminal.
+- `rubberband` not found: add the folder containing `rubberband.exe` to the user `Path`, open a new terminal, and repeat the version check.
+- The page still mentions an unavailable macOS Keychain: update the code, stop and restart the old server, then refresh the page. That message comes from the old version.
+- Native credential store unavailable: rerun `setup.cmd` as your signed-in user to install dependencies, then restart. `keyring` automatically installs its Windows backend dependency.
+- Port 8771 in use: stop the old instance, or run `$env:PORT="8772"` in PowerShell before `.\start.cmd`, then open `http://127.0.0.1:8772`.
+
+Windows support includes offline contract tests; a real Windows paid generation run has not yet been verified.
+
+### macOS
+
+Requires Python 3.12+ and Rubber Band. The optional mesh worker uses an isolated Python 3.12 environment.
 
 ```bash
 git clone https://github.com/Hy-1990/Genjustsu-Pro.git
 cd Genjustsu-Pro
 brew install python@3.12 rubberband
 PYTHON=python3.12 bash setup.sh
-FACE_PYTHON=python3.12 bash setup-face-mesh.sh
-```
-
-The main environment and mesh worker are isolated. Installing the mesh worker enables both face-mesh methods. Its Google Face Landmarker model downloads at first use.
-
-### Windows
-
-Install [Python 3.12](https://www.python.org/downloads/windows/) with the Python launcher, then download the [Rubber Band Windows command-line utility](https://breakfastquay.com/rubberband/). Extract the utility and add its folder to `PATH`; `rubberband --version` must work in a new terminal.
-
-From the project folder in PowerShell:
-
-```powershell
-.\setup.cmd
 # Optional: enable the face-mesh methods
-.\setup-face-mesh.cmd
-.\start.cmd
-```
-
-For an existing checkout, run `git pull`, then rerun `setup.cmd` and restart the service. Do not copy a macOS virtual environment to Windows. Keys are entered on the page and saved for the currently signed-in Windows user; administrator access is not required. Windows support has offline contract tests, but a real Windows generation run has not yet been verified.
-
-## Start
-
-```bash
-cd Genjustsu-Pro
+FACE_PYTHON=python3.12 bash setup-face-mesh.sh
 bash start.command
 ```
 
-Open **http://127.0.0.1:8771**. To use another port:
+Open **http://127.0.0.1:8771**. For later sessions, run `bash start.command` from the project folder. Use `PORT=8772 bash start.command` for another port. Stop with **Ctrl+C**.
 
-```bash
-PORT=8772 bash start.command
-```
-
-Stop with **Ctrl+C**. Keep the local process running while processing. Closing the browser is fine; reopening a saved task retrieves its current state.
+On both systems, keep the local service running while processing. Closing the browser is fine; reopening a saved task retrieves its current state.
 
 ## First run
 

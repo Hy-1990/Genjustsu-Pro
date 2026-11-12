@@ -18,49 +18,78 @@
 
 语言切换只影响界面文案。模型提示词保留原项目的原文；切换界面语言时，不会翻译用户填写或任务已保存的提示词。
 
-## 安装
+## 安装与启动
 
-macOS 需要 Python 3.12 及以上版本和 Rubber Band；Windows 安装脚本使用 Python 3.12。可选的人脸网格组件使用 Python 3.12。
+### Windows：首次安装
+
+1. 安装 [Git for Windows](https://git-scm.com/download/win) 和 [Python 3.12](https://www.python.org/downloads/windows/)。Python 安装时保留 **Python Launcher**，勾选 **Add python.exe to PATH**。
+2. 下载 [Rubber Band 的 Windows 命令行工具](https://breakfastquay.com/rubberband/)（选择 Windows executable），解压到固定目录，例如 `C:\Tools\rubberband`。找到 `rubberband.exe` 所在文件夹，在 Windows 搜索中打开“编辑账户的环境变量”，编辑用户变量 `Path`，新增该文件夹的完整路径。不要只添加 ZIP 文件或 exe 文件路径。
+3. 关闭并重新打开 PowerShell，检查下面两条命令都能显示版本：
+
+   ```powershell
+   py -3.12 --version
+   rubberband --version
+   ```
+
+4. 在希望保存项目的目录打开 PowerShell，依次执行：
+
+   ```powershell
+   git clone https://github.com/Hy-1990/Genjustsu-Pro.git
+   cd Genjustsu-Pro
+   .\setup.cmd
+   .\start.cmd
+   ```
+
+5. 看到服务启动后，在浏览器打开 **http://127.0.0.1:8771**。保持终端窗口运行；停止服务按 **Ctrl+C**。
+6. 如需使用“快速人脸网格”或“深度 + 人脸网格”，停止服务后执行 ` .\setup-face-mesh.cmd`，安装完成再执行 `.\start.cmd`。只测试“深度 + SAM”无需安装此组件。首次使用网格模式时会下载 Google Face Landmarker 模型。
+
+### Windows：已有项目更新（修复密钥配置报错）
+
+先在旧服务终端按 **Ctrl+C**，然后在项目目录执行：
+
+```powershell
+git pull
+.\setup.cmd
+.\start.cmd
+```
+
+如果项目是通过 ZIP 下载的，请从 GitHub 下载最新 ZIP，解压到一个新目录，再按首次安装步骤运行。不要覆盖或删除旧目录里的 `runs/`，其中可能有历史任务和素材。不要将 macOS 的 `.venv` 或 `.venv-face` 复制到 Windows。
+
+启动后刷新浏览器，打开**密钥设置**，分别填写 DreamAPI API Key 和 Replicate API Token 并保存。两项应显示“已配置”。Windows 使用当前登录用户的**凭据管理器**保存密钥，重启后自动读取，不需要管理员运行，也不需要修改配置文件。
+
+### Windows：以后启动与常见问题
+
+每次只需在项目目录运行：
+
+```powershell
+.\start.cmd
+```
+
+- `py` 或 Python 3.12 找不到：重新安装 Python 3.12 并包含 Python Launcher，重新打开终端。
+- `rubberband` 找不到：检查用户 `Path` 是否包含 `rubberband.exe` 所在目录，重新打开终端后再次运行版本检查。
+- 仍提示“无法访问 macOS 钥匙串”：确认已更新代码、停止旧后台并重新启动，再刷新页面；这是旧版本提示。
+- 提示系统凭据库不可用：在当前登录用户下运行 `setup.cmd` 重新安装依赖，再重启。Windows 的凭据后端依赖会随 `keyring` 自动安装。
+- 端口 8771 被占用：先关闭旧实例，或在 PowerShell 中执行 `$env:PORT="8772"` 后运行 `.\start.cmd`，再访问 `http://127.0.0.1:8772`。
+
+Windows 适配包含离线契约测试；尚未完成真实 Windows 环境的整条付费生成验证。
+
+### macOS
+
+需要 Python 3.12 及以上版本和 Rubber Band。可选人脸网格组件使用独立的 Python 3.12 环境。
 
 ```bash
 git clone https://github.com/Hy-1990/Genjustsu-Pro.git
 cd Genjustsu-Pro
 brew install python@3.12 rubberband
 PYTHON=python3.12 bash setup.sh
-FACE_PYTHON=python3.12 bash setup-face-mesh.sh
-```
-
-主程序与人脸网格组件使用独立环境。安装网格组件后，两种带人脸网格的引导方式均可使用。首次使用时会下载 Google Face Landmarker 模型。
-
-### Windows
-
-安装 [Python 3.12](https://www.python.org/downloads/windows/)（包含 Python Launcher），并下载 [Rubber Band 的 Windows 命令行工具](https://breakfastquay.com/rubberband/)。解压后将工具目录加入 `PATH`，重新打开终端，确认 `rubberband --version` 可运行。
-
-在项目目录的 PowerShell 中执行：
-
-```powershell
-.\setup.cmd
 # 可选：安装人脸网格组件
-.\setup-face-mesh.cmd
-.\start.cmd
-```
-
-已有项目先执行 `git pull`，再重新运行 `setup.cmd` 并重启服务。不要把 macOS 虚拟环境复制到 Windows。密钥仍在页面填写，保存在当前登录用户的 Windows 凭据管理器，不需要管理员运行。Windows 适配已增加离线契约测试，尚未完成真实 Windows 环境的整条生成验证。
-
-## 启动
-
-```bash
-cd Genjustsu-Pro
+FACE_PYTHON=python3.12 bash setup-face-mesh.sh
 bash start.command
 ```
 
-打开 **http://127.0.0.1:8771**。如需更换端口：
+打开 **http://127.0.0.1:8771**。以后只需在项目目录执行 `bash start.command`；更换端口可用 `PORT=8772 bash start.command`。按 **Ctrl+C** 停止。
 
-```bash
-PORT=8772 bash start.command
-```
-
-按 **Ctrl+C** 停止应用。处理期间保持本地程序运行。可以关闭浏览器，重新打开已保存的任务后会显示当前进度。
+两个系统处理任务时都需要保持本地服务运行。可以关闭浏览器；重新打开已保存任务后会显示当前进度。
 
 ## 首次使用
 
