@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-12T04:41:13.586801+00:00",
+  "generatedAt": "2026-11-12T05:36:43.768105+00:00",
   "title": "Design System: Genjustsu Pro",
   "extensions": {
     "colorMeta": {
@@ -766,6 +766,10 @@
       {
         "name": "compact-desktop-height-upper",
         "value": "820px"
+      },
+      {
+        "name": "short-desktop-height-upper",
+        "value": "760px"
       }
     ]
   },
