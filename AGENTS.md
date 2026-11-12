@@ -3,6 +3,7 @@ Local macOS single-user app. Keep credentials in macOS Keychain, never configura
 Retain depth/SAM and face-mesh preparation with whole-clip human review.
 Use DreamAPI Seedance 2.5 directly at the chosen resolution. No draft or upgrade path.
 Keep original compressed source audio in the final export.
+Interface localization must never translate or rewrite core workflow prompts or user-entered prompts. Keep upstream prompt wording independent of the interface language.
 Do not submit paid API calls during setup, development or tests without explicit generation authorization.
 Persist task IDs before collecting results. Never automatically resubmit ambiguous or failed paid generation requests.
 Preserve upstream MIT license and attribution. Do not redistribute upstream example media or branding.

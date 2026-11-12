@@ -1,5 +1,8 @@
 "use strict";
 
+// Core workflow text is independent of the interface language.
+const WORKFLOW_DEFAULT_PROMPT = "Replace the complete selected subject with the supplied character reference in every frame, including hair, hands, clothing and footwear. Preserve the original background, camera framing, lighting, motion and timing. Match the embedded speech exactly without extra dialogue. Use the embedded vocals in @Video1 for performance and lip synchronization. If using two characters, specify which subject each reference replaces before submitting.";
+
 const copy = {
   zh: {
     newTask: "新建任务", recent: "最近任务", historyEmpty: "任务会保留在这里，随时回来继续。",
@@ -16,7 +19,6 @@ const copy = {
     character: "目标角色", chooseReference: "添加角色参考", referenceHint: "图片或身份参考视频",
     addSecond: "添加第二个角色参考（可选）", chooseImage: "选择参考图片", prompt: "替换说明",
     promptHint: "描述人物如何替换。多个角色需注明与原片人物的对应关系。",
-    defaultPrompt: "将选中的人物完整替换为参考角色，包括头发、服装和鞋子。保持原视频的背景、镜头、光线、动作和时间节奏，口型与原始对白同步。",
     resolution: "输出分辨率", generate: "生成完整视频", generationGate: "先准备并批准引导视频，即可生成。",
     generationCost: "将直接调用 DreamAPI 生成完整视频并计费。", preview: "视频预览",
     stateIdle: "等待素材", emptyTitle: "从一段原始视频开始",
@@ -98,7 +100,6 @@ const copy = {
     character: "Target character", chooseReference: "Add a character reference", referenceHint: "Image or identity reference video",
     addSecond: "Add a second character (optional)", chooseImage: "Choose reference image", prompt: "Replacement instructions",
     promptHint: "Describe the replacement. Map references to people explicitly when using two characters.",
-    defaultPrompt: "Replace the selected subject completely with the reference character, including hair, clothing and footwear. Preserve the source background, camera, lighting, motion and timing. Match lip movements to the original dialogue.",
     resolution: "Output resolution", generate: "Generate finished video", generationGate: "Prepare and approve guidance to enable generation.",
     generationCost: "Generates the chosen resolution directly using paid DreamAPI processing.",
     preview: "Video preview", stateIdle: "Awaiting input", emptyTitle: "Start with a source video",
@@ -217,7 +218,6 @@ function applyLanguage() {
     element.textContent = t(element.dataset.i18n);
   });
   $("#language").textContent = language === "zh" ? "EN" : "中文";
-  if (!$("#prompt").dataset.edited && !job) $("#prompt").value = t("defaultPrompt");
   updatePromptCount();
   renderKeys();
   renderHistory();
@@ -448,7 +448,7 @@ async function selectJob(ident) {
   if (job?.prompt) {
     $("#prompt").value = job.prompt;
     $("#prompt").dataset.edited = "true";
-  } else $("#prompt").value = t("defaultPrompt");
+  } else $("#prompt").value = WORKFLOW_DEFAULT_PROMPT;
   if (job?.resolution) $("#resolution").value = job.resolution;
   const reference = job?.references.find((name) => name.startsWith("reference-1"));
   if (reference) {
@@ -470,7 +470,7 @@ function newTask() {
   clearFiles();
   localStorage.removeItem("genjustsu.lastTask");
   $("#source-name").textContent = t("chooseVideo");
-  $("#prompt").value = t("defaultPrompt");
+  $("#prompt").value = WORKFLOW_DEFAULT_PROMPT;
   delete $("#prompt").dataset.edited;
   $("#mode").value = "depth";
   $("#subject").value = "person";
@@ -653,6 +653,7 @@ for (const button of document.querySelectorAll(".remove-key")) {
 }
 
 async function boot() {
+  $("#prompt").value = WORKFLOW_DEFAULT_PROMPT;
   applyLanguage();
   try {
     token = (await api("/api/session")).token;

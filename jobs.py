@@ -187,6 +187,34 @@ def repair(ident):
     update(ident, state="review", stage="review", error=None)
 
 
+
+def generation_prompt(prompt, *, identity_video, second_reference, mode):
+    """Preserve the upstream model instructions independently of interface localization."""
+    if identity_video:
+        result = prompt + (
+            "\n@Video1 is the source edit and contains isolated vocals pitched +3 semitones. "
+            "@Video2 is only the primary character visual identity reference. "
+            "Use only @Video1 audio for speech timing."
+        )
+    else:
+        mapping = (
+            "@Image1 is the primary character reference; @Image2 is the secondary character reference."
+            if second_reference else "@Image1 is the only replacement character reference."
+        )
+        result = prompt.replace("@Audio1", "the audio embedded in @Video1") + (
+            "\n@Video1 contains the colored-depth composite and embedded isolated vocals pitched up three semitones, "
+            "without the music bed; use its embedded audio for performance and lip synchronization. "
+        ) + mapping
+    if mode in ("face_mesh", "depth_mesh"):
+        description = "depth composite with face mesh overlay" if mode == "depth_mesh" else "original video with face mesh overlay"
+        result = result.replace("colored-depth composite", description) + (
+            " Remove all face mesh lines and any depth colors from the output; "
+            "use them only for expression and lip motion guidance. "
+            "Replace the entire original identity including hair. Preserve the exact embedded dialogue and timing."
+        )
+    return result
+
+
 def generate(ident):
     folder = folder_for(ident)
     require_approved(folder)
@@ -201,13 +229,9 @@ def generate(ident):
     identity_video = references[0].suffix in (".mp4", ".mov", ".webm")
     videos = [prepared_url] + ([urls[0]] if identity_video else [])
     images = urls[1:] if identity_video else urls
-    guidance = (
-        "\nUse @Video1 for the source performance, camera movement, background and speech timing. "
-        + ("Use @Video2 only for the primary character's appearance. " if identity_video else "Use @Image1 as the primary character reference. ")
-        + "Replace the whole selected identity including hair and clothing. "
-        "Remove all depth colors and face mesh lines. Preserve the embedded speech timing."
+    prompt = generation_prompt(
+        data["prompt"], identity_video=identity_video, second_reference=len(references) > 1, mode=data["mode"]
     )
-    prompt = data["prompt"] + guidance
     if len(prompt) > 1500:
         raise ValueError("prompt_too_long")
     payload = {
