@@ -6,7 +6,8 @@ A local macOS workspace for video character replacement. Prepare depth/mask or f
 
 ## Features
 
-- Dark workbench with a persistent execution monitor, real processing stages, loading states, visible errors and recovery actions.
+- Day/night appearances with saved preference and a PC-first, single-screen Studio: a large viewer, internally scrolling inspector, anchored generation controls and on-demand processing steps.
+- Early format, size and duration validation, inline upload requirements and dismissible, bilingual error/success toasts.
 - Chinese and English interface, recent tasks, and original / guidance / depth / mask / result previews.
 - Three preparation methods: Depth + SAM, Fast Face Mesh, and Depth + SAM + Face Mesh.
 - DreamAPI generation and media uploads, with direct 480p / 720p / 1080p output.
@@ -50,7 +51,7 @@ Stop with **Ctrl+C**. Keep the local process running while processing. Closing t
 
 1. Open **API keys**.
 2. Save your [DreamAPI key](https://api.newportai.com/) and [Replicate token](https://replicate.com/account/api-tokens). macOS may ask you to allow Python to access Keychain.
-3. Add a **4–30 second source video with audio** and a character reference. Start with a single centered speaker.
+3. Add a **4–30 second source video with audio** (MP4/MOV/WebM, ≤500 MB) and a character reference (≤100 MB). The page checks format, size and readable duration before upload; the server checks the required audio track before starting paid preparation. Start with a single centered speaker.
 4. Choose a guidance method and click **Prepare guidance**. This calls Replicate and incurs charges.
 5. Inspect the entire guidance video. Approve it after checking hair, hands, clothing, background spill and face tracking. Depth methods can re-segment from the original footage, which makes another paid Replicate call.
 6. Select resolution, review the prompt and click **Generate finished video**. This directly submits a paid DreamAPI generation.

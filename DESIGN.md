@@ -1,245 +1,330 @@
 ---
 name: Genjustsu Pro
-description: A dark bilingual video workbench with truthful execution telemetry.
+description: A bilingual production desk in porcelain and forest by day, petroleum and citron by night.
 colors:
-  ink: "#e4edf7"
-  muted: "#9cacc1"
-  surface: "#0d1622"
-  ground: "#060b12"
-  rail: "#08111c"
-  line: "#223143"
-  primary: "#83d9e9"
-  primary-hover: "#b2eef6"
-  primary-soft: "#142f3a"
-  success: "#8cddb1"
-  success-soft: "#102820"
-  danger: "#ffabb1"
-  danger-soft: "#2c1822"
-  primary-ink: "#07121a"
-  secondary: "#172638"
-  secondary-hover: "#21364a"
-  field: "#0a131f"
-  field-border: "#30465f"
-  focus: "#70b6d0"
-  media-ground: "#09111b"
-  media-dark: "#03070b"
-  execution: "#0a1420"
-  execution-border: "#2c4055"
+  day-ground: "#edf1ef"
+  day-surface: "#ffffff"
+  day-rail: "#f7f9f7"
+  day-field: "#f5f7f5"
+  day-ink: "#203c36"
+  day-muted: "#52665e"
+  day-line: "#d6dfda"
+  day-line-strong: "#b6c6be"
+  day-primary: "#215e4f"
+  day-primary-hover: "#164d3f"
+  day-primary-ink: "#ffffff"
+  day-primary-soft: "#e4eee7"
+  day-accent: "#d5ec92"
+  day-accent-ink: "#314a1a"
+  day-success: "#286747"
+  day-success-soft: "#eaf3ec"
+  day-danger: "#a03734"
+  day-danger-soft: "#fff0ec"
+  day-warning: "#76531d"
+  day-warning-soft: "#faf1de"
+  day-media: "#e4e9e5"
+  day-media-loaded: "#17251f"
+  day-focus: "#317d65"
+  day-header: "#f8faf8"
+  night-ground: "#18272e"
+  night-surface: "#22343b"
+  night-rail: "#1d2f36"
+  night-field: "#1b2c33"
+  night-ink: "#edf2e9"
+  night-muted: "#afc0ba"
+  night-line: "#3a4e53"
+  night-line-strong: "#61777a"
+  night-primary: "#d6ec9a"
+  night-primary-hover: "#e5f5b9"
+  night-primary-ink: "#253729"
+  night-primary-soft: "#354a3d"
+  night-accent: "#d6ec9a"
+  night-accent-ink: "#253729"
+  night-success: "#a5d6b5"
+  night-success-soft: "#294438"
+  night-danger: "#ffb8a9"
+  night-danger-soft: "#4b3535"
+  night-warning: "#efd39d"
+  night-warning-soft: "#443f30"
+  night-media: "#1c2e34"
+  night-media-loaded: "#101e24"
+  night-focus: "#c8e48d"
+  night-header: "#1d2e35"
 typography:
+  headline:
+    fontFamily: "\"Manrope\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
+    fontSize: "27px"
+    fontWeight: 650
+    lineHeight: 1.25
+    letterSpacing: "-.025em"
+  brand:
+    fontFamily: "\"Manrope\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
+    fontSize: "17px"
+    fontWeight: 600
+    lineHeight: 1.5
+    letterSpacing: "-.025em"
+  title:
+    fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
+    fontSize: "15px"
+    fontWeight: 600
+    lineHeight: 1.5
   body:
     fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
     fontSize: "14px"
     fontWeight: 400
-    lineHeight: 1.6
-  title:
-    fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
-    fontSize: "15px"
-    fontWeight: 650
-    lineHeight: 1.6
-  subheading:
-    fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
-    fontSize: "14px"
-    fontWeight: 600
-    lineHeight: 1.6
+    lineHeight: 1.5
   label:
     fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
     fontSize: "12px"
-    fontWeight: 500
-    lineHeight: 1.6
-  button:
-    fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
-    fontSize: "14px"
     fontWeight: 550
-    lineHeight: 1.4
-  headline:
+    lineHeight: 1.5
+  annotation:
     fontFamily: "-apple-system, BlinkMacSystemFont, \"Segoe UI\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
-    fontSize: "25px"
-    fontWeight: 650
-    lineHeight: 1.4
-    letterSpacing: "-.025em"
+    fontSize: "11px"
+    fontWeight: 400
+    lineHeight: 1.5
   elapsed:
     fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace"
-    fontSize: "15px"
+    fontSize: "12px"
     fontWeight: 400
-    lineHeight: 1.6
+    lineHeight: 1.5
 rounded:
-  badge: "4px"
-  tab: "5px"
+  badge: "5px"
+  tab: "6px"
   field: "7px"
-  control: "8px"
-  panel: "12px"
+  notice: "8px"
+  control: "9px"
+  switch: "10px"
+  execution: "12px"
+  panel: "14px"
 spacing:
   tight: "4px"
   small: "8px"
   field: "10px"
   compact: "12px"
-  section: "16px"
+  inspector: "18px"
   panel: "20px"
-  gutter: "24px"
-  page: "32px"
+  wide: "22px"
+  page: "28px"
 components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.primary-ink}"
+  day-button-primary:
+    backgroundColor: "{colors.day-primary}"
+    textColor: "{colors.day-primary-ink}"
     rounded: "{rounded.control}"
-    padding: "10px 15px"
-  button-primary-hover:
-    backgroundColor: "{colors.primary-hover}"
-    textColor: "{colors.primary-ink}"
+    padding: "10px 14px"
+  day-button-primary-hover:
+    backgroundColor: "{colors.day-primary-hover}"
+    textColor: "{colors.day-primary-ink}"
     rounded: "{rounded.control}"
-    padding: "10px 15px"
-  button-secondary:
-    backgroundColor: "{colors.secondary}"
-    textColor: "{colors.ink}"
+    padding: "10px 14px"
+  day-button-secondary:
+    backgroundColor: "{colors.day-primary-soft}"
+    textColor: "{colors.day-primary}"
     rounded: "{rounded.control}"
-    padding: "10px 15px"
-  button-quiet:
+    padding: "10px 14px"
+  day-button-quiet:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    textColor: "{colors.day-muted}"
     rounded: "{rounded.control}"
-    padding: "10px 15px"
-  button-text:
+    padding: "10px 14px"
+  day-button-text:
     backgroundColor: "transparent"
-    textColor: "{colors.primary}"
+    textColor: "{colors.day-primary}"
     rounded: "{rounded.control}"
     padding: "4px 0"
-  field:
-    backgroundColor: "{colors.field}"
-    textColor: "{colors.ink}"
+  day-field:
+    backgroundColor: "{colors.day-field}"
+    textColor: "{colors.day-ink}"
     rounded: "{rounded.field}"
     padding: "9px 10px"
-  panel:
-    backgroundColor: "{colors.surface}"
-    textColor: "{colors.ink}"
+  day-panel:
+    backgroundColor: "{colors.day-surface}"
+    textColor: "{colors.day-ink}"
     rounded: "{rounded.panel}"
-    padding: "20px"
-  status-badge:
-    backgroundColor: "{colors.media-ground}"
-    textColor: "{colors.muted}"
+    padding: "18px"
+  day-status-badge:
+    backgroundColor: "{colors.day-field}"
+    textColor: "{colors.day-muted}"
     rounded: "{rounded.badge}"
-    padding: "3px 8px"
-  status-badge-success:
-    backgroundColor: "{colors.success-soft}"
-    textColor: "{colors.success}"
+    padding: "4px 7px"
+  day-status-badge-success:
+    backgroundColor: "{colors.day-success-soft}"
+    textColor: "{colors.day-success}"
     rounded: "{rounded.badge}"
-    padding: "3px 8px"
-  preview-tab-active:
-    backgroundColor: "{colors.primary-soft}"
-    textColor: "{colors.primary}"
+    padding: "4px 7px"
+  day-preview-tab-active:
+    backgroundColor: "{colors.day-primary-soft}"
+    textColor: "{colors.day-primary}"
     rounded: "{rounded.tab}"
     padding: "5px 10px"
-  execution-panel:
-    backgroundColor: "{colors.execution}"
-    textColor: "{colors.ink}"
+  night-button-primary:
+    backgroundColor: "{colors.night-primary}"
+    textColor: "{colors.night-primary-ink}"
+    rounded: "{rounded.control}"
+    padding: "10px 14px"
+  night-button-primary-hover:
+    backgroundColor: "{colors.night-primary-hover}"
+    textColor: "{colors.night-primary-ink}"
+    rounded: "{rounded.control}"
+    padding: "10px 14px"
+  night-button-secondary:
+    backgroundColor: "{colors.night-primary-soft}"
+    textColor: "{colors.night-primary}"
+    rounded: "{rounded.control}"
+    padding: "10px 14px"
+  night-button-quiet:
+    backgroundColor: "transparent"
+    textColor: "{colors.night-muted}"
+    rounded: "{rounded.control}"
+    padding: "10px 14px"
+  night-button-text:
+    backgroundColor: "transparent"
+    textColor: "{colors.night-primary}"
+    rounded: "{rounded.control}"
+    padding: "4px 0"
+  night-field:
+    backgroundColor: "{colors.night-field}"
+    textColor: "{colors.night-ink}"
+    rounded: "{rounded.field}"
+    padding: "9px 10px"
+  night-panel:
+    backgroundColor: "{colors.night-surface}"
+    textColor: "{colors.night-ink}"
     rounded: "{rounded.panel}"
-    padding: "17px 20px 14px"
+    padding: "18px"
+  night-status-badge:
+    backgroundColor: "{colors.night-field}"
+    textColor: "{colors.night-muted}"
+    rounded: "{rounded.badge}"
+    padding: "4px 7px"
+  night-status-badge-success:
+    backgroundColor: "{colors.night-success-soft}"
+    textColor: "{colors.night-success}"
+    rounded: "{rounded.badge}"
+    padding: "4px 7px"
+  night-preview-tab-active:
+    backgroundColor: "{colors.night-primary-soft}"
+    textColor: "{colors.night-primary}"
+    rounded: "{rounded.tab}"
+    padding: "5px 10px"
 ---
 
 # Design System: Genjustsu Pro
 
 ## Overview
 
-**Creative North Star: "The Execution Observatory"**
+**Creative North Star: "The Contemporary Production Folder"**
 
-Near-black blue working surfaces, icy cyan actions and fine vector rules translate the user-pinned NEXUS telemetry direction into a compact local video tool. Pale text and restrained semantic color support precise inspection without competing with the media.
+Porcelain surfaces, forest actions and brushed-silver edges create the daytime desk. Petroleum surfaces and citron actions create the nighttime desk. Both use the same proportions, precise inset fields and restrained frame brackets; the media remains the central object. The user explicitly rejects a uniformly black science-fiction dashboard.
 
-The visual language is operational: measured time, completed-stage counts and connected phase markers describe real work. Native bilingual controls and visible recovery preserve a professional, simple interface. No reference artwork or external font asset is shipped.
+This is a compact working environment with deliberate hierarchy rather than decorative telemetry. Manrope gives Latin headings and the brand a distinct voice; native Chinese and body typography preserve familiar reading and control behavior. Appearance changes only UI tokens, preserving entered materials, playback and ongoing work.
 
 **Key Characteristics:**
-- Near-black tonal layers with icy cyan action and selection.
-- Compact native typography; monospace reserved for elapsed measurement.
-- Thin connected stages with motion tied to actual execution.
+- Two intentional working environments sharing one component grammar.
+- Local Manrope headings and brand, with native bilingual body and controls.
+- Fine edges, inset fields, rounded folders and restrained media-frame brackets.
+- Visible task state with optional detail, internal inspector scrolling and anchored generation actions.
 
 ## Colors
 
-The palette is a cool dark field with one working accent; frontmatter records the actual CSS values.
+Frontmatter records separate `day-*` and `night-*` primitives. These map to the same CSS custom-property suffix: `day-primary` is `--primary` at `:root`, and `night-primary` is `--primary` at `:root[data-theme="dark"]`. Components consume the active custom property rather than choosing their own palette.
 
 ### Primary
 
-- **Icy cyan** (`primary`, `primary-hover`): primary actions, links and active work.
-- **Deep cyan selection** (`primary-soft`): selected media tabs, provider tiles and transient feedback.
-- **Night ink** (`primary-ink`): legible text on bright primary buttons.
+- **Forest action / citron action** (`day-primary`, `night-primary`): primary buttons, selected inspection controls, links and active task markers. Their hover, ink and soft companions travel together.
+- **Citron seal** (`day-accent`, `night-accent`): the small Pro mark, with its paired accent ink.
 
 ### Neutral
 
-- **Pale reading ink** (`ink`) and **slate annotation** (`muted`): main text and secondary explanation.
-- **Near-black ground** (`ground`), **dark task rail** (`rail`), **blue-black surface** (`surface`) and **fine divider** (`line`): flat structural layers.
-- **Secondary control** (`secondary`, `secondary-hover`): supporting filled actions.
-- **Inset field** (`field`), **field edge** (`field-border`) and **focus cyan** (`focus`): input fill, boundary and keyboard focus.
-- **Media well** (`media-ground`, `media-dark`): empty and loaded media respectively.
-- **Execution field** (`execution`, `execution-border`): the persistent state panel and its outline.
-- **Approved green** (`success`, `success-soft`) and **failure rose** (`danger`, `danger-soft`): semantic status pairs rather than additional brand accents.
+- **Porcelain / petroleum** (`*-ground`, `*-surface`, `*-rail`, `*-header`): page, working panels, history-tone role and toolbar layers.
+- **Reading ink / annotation ink** (`*-ink`, `*-muted`): main text and explanatory copy.
+- **Inset field / silver edge** (`*-field`, `*-line`, `*-line-strong`): controls, separators and stronger upload/frame outlines.
+- **Media well / loaded media** (`*-media`, `*-media-loaded`): empty frame and contain-fit video surround.
+- **Approved green**, **failure coral** and **warning ochre** (`*-success`, `*-danger`, `*-warning`, each with `*-soft`): semantic foreground/background pairs, not additional brand accents.
+- **Focus ink** (`*-focus`): keyboard outlines in the active environment.
 
-**The State Color Rule.** Cyan marks action, selection and active work; green marks approved or complete states; rose marks actionable failure. Every pipeline state also has text.
+**The Paired Environment Rule.** Resolve every semantic color through the active theme. A light surface or primary color must never be copied into night mode without its paired role.
+
+**The Reading Ink Rule.** Use muted ink for secondary copy, not reduced opacity. Keep semantic states named in text as well as color.
 
 ## Typography
 
-**Body and Control Font:** Native platform sans with explicit Chinese fallbacks, as recorded in frontmatter. **Measurement Font:** `ui-monospace, SFMono-Regular, Consolas, monospace`, used only for elapsed time. No external font asset is loaded.
+**Display Font:** Locally served variable Manrope (weights 200–800, `font-display: swap`), with explicit Chinese sans fallbacks. The asset is covered by SIL Open Font License; retain its bundled license when distributing it. **Body Font:** Native platform sans with explicit Chinese fallbacks. **Measurement Font:** Native monospace for elapsed time.
 
-The compact hierarchy suits an Operate surface. The workspace heading uses the headline token, decreasing to (22px) below (950px), then (21px) below (620px). Panel titles use the title token; review subheadings use subheading. Body defaults to (14px); most labels, helpers, fields and media tabs use (12px). Execution titles use (15px), weight (600), becoming (13px) on mobile. Elapsed measurement becomes (12px) on mobile. Stage-state annotations use (11px). Numeric metadata uses tabular figures. Helper line-heights range from (1.7–1.9), with long workflow and settings explanations limited to (70ch).
+### Hierarchy
 
-**The Measurement Rule.** Use monospace for elapsed measurement; use the native bilingual sans stack for workspace titles, labels and controls.
+- **Headline:** the frontmatter headline role for the workspace title; compact desktop uses (23px), mobile (22px).
+- **Brand:** the frontmatter brand role; mobile reduces to (15px). The small Pro seal uses native (11px), weight (650).
+- **Title:** base section headings use the title role; inspector headings use (13px), execution and review headings (12px). Empty-state titles use native (18px), weight (550).
+- **Body:** the body role is the inherited baseline; most explanatory copy uses (12px), with helper copy at (11px) and line-height (1.65–1.8).
+- **Label:** the label role describes material controls; tabs, status badges and toolbar appearance labels use (11px). Keep natural bilingual case rather than imposed capitals.
+- **Elapsed:** the elapsed role and tabular numeric metadata support measurement without becoming decoration.
+
+**The Two Voices Rule.** Use Manrope for the brand and workspace heading; retain native bilingual sans for operational copy and controls. Reserve monospace for elapsed time.
 
 ## Layout
 
-The desktop shell has a sticky full-height task rail (216px), top bar (70px minimum), and centered main region (1700px maximum). Main padding is (24px 28px 32px). Materials occupy (300–355px) beside a flexible viewer, separated by (24px); at widths of at least (1650px), materials become (385px). The execution panel spans the work area above the two columns and sticks below the top bar. The viewer sticks at (290px) on desktop.
+Desktop Studio is a viewport-height working plane from (900px) upward. A horizontal toolbar sits above the title, compact execution strip and two-column workbench. Main content is centered with a maximum width of (1840px) and default padding (24px 28px 20px). The viewer occupies the flexible left column; the inspector is (334px) with an (18px) gutter. At (1650px) upward the inspector becomes (360px), gutter (22px), inspector padding (22px). At (1099px) and below, it becomes (300px), gutter (14px), page padding (18px).
 
-At (1180px) and below, the rail narrows to (184px), main padding to (24px), panels to (16px), and materials to (270–310px) with a (16px) gutter. At (950px) and below the rail becomes (170px), the workbench becomes one column, and the viewer stops sticking. Materials lead until guidance exists; then the viewer leads for inspection.
+The inspector is a bounded flex column: only its inner materials/options area scrolls, while the generation footer remains outside that scroll area with a top divider. The resolution control is (86px) wide beside a flexible generation action. The viewer is also bounded and may scroll internally when review/result content requires it. Desktop video fills available space with `object-fit: contain`; its empty frame brackets disappear when video is present.
 
-At (620px) and below, the rail becomes a top section with brand, new-task action and horizontally scrolling history. The top bar is (52px minimum), with execution sticking below it. Main padding is (21px 16px 28px). Execution descriptions and secondary stage annotations are hidden, but phase labels remain. The phase strip scrolls horizontally; changed state reveals the current, failed or waiting phase, while unchanged polling preserves its position. Settings input/save rows stack and provider headings wrap. Chinese and English share the same layout.
+At desktop heights of (820px) or less, the toolbar reduces from (68px) to (58px); title, gutters and panel spacing compact. The source drop target becomes (66px) minimum height. At widths (900–1099px), the later media rule sets its minimum height to (150px); the general desktop minimum is (140px). Prioritize checks at 1024×768, 1280×720, 1366×768, 1440×900 and 1920×1080.
 
-The media well has a (16:10) aspect ratio and contain-fit native video. Its minimum height is (280px), overridden to (290px) at compact desktop, (260px) at single-column widths and (220px) on mobile. Desktop video and stage maximum height is `min(46vh, 480px)`; mobile caps both at (360px). Repeated small spacing increments form a compact working rhythm.
+At (760px) and below, toolbar controls wrap, secondary toolbar labels and theme labels condense, and viewer then inspector stack naturally. Media is bounded between a (260px) minimum and (400px) maximum; steps become four columns. Widths (761–899px) retain the two-column grid but use ordinary document flow, rather than the desktop height lock. Mobile history width is viewport minus (32px), and settings key rows stack.
 
 ## Elevation & Depth
 
-Flat surfaces use subtle dark tonal differences and one-pixel borders. Fields sit within panels and media sits within an inset well. The only shipped shadow is the fixed toast: `0 7px 25px rgb(0 0 0 / 15%)`, separating transient feedback from the work below.
+A hybrid of flat tonal planes and fine edges establishes structure. Inputs are inset through fill and border rather than inner shadows. Frame brackets and stronger outline ink give the empty viewer a production-folder character. Floating history and toasts share the theme-specific ambient shadow: day `0 12px 36px rgb(22 48 36 / 14%)`, night `0 12px 36px rgb(2 15 19 / 30%)`.
 
-**The Tonal Separation Rule.** Panels stay flat at rest; fine borders and dark tonal layers establish containment. Toasts alone use the shipped floating shadow.
+**The Working Plane Rule.** Keep working panels flat. Reserve the ambient shadow for floating history and transient feedback.
 
 ## Shapes
 
-Large panels have gently rounded corners using the panel token. Buttons, uploads, media wells and state blocks share the control radius; fields use the field radius, tabs the tab radius, and badges and thumbnails the badge radius. Fine solid borders define containment; the source drop target uses a dashed border. Pipeline markers are circular and connected by fine rules. Icons are inline stroked SVG, generally (20px) with (1.7px) strokes.
+Large folders use the panel radius; execution and toast surfaces use the execution radius. Buttons, uploads, review blocks and media wells share the control radius. Fields, tabs and badges step down deliberately. Fine solid edges define fields and dividers; the source drop target alone uses a dashed outline. Inline SVG icons normally use (19px) boxes and (1.65px) rounded strokes. Circular execution markers express real state; the plus/minus disclosure indicator is a text affordance, not an icon system.
 
 ## Components
 
 ### Buttons
 
-Compact and direct. Primary actions use bright cyan with dark text. Supporting actions use the dark secondary fill; quiet actions are transparent and text actions have minimal padding. Base padding is (10px 15px) with an (8px) gap; generation has a (43px) minimum height. Hover changes fill or text; transitions last (160ms). Disabled opacity is (.55) with a not-allowed cursor. Keyboard focus is a (3px) cyan outline offset by (3px).
+Compact, gently rounded and direct. Primary uses the theme's primary/primary-ink pair; secondary uses primary-soft/primary; quiet is transparent with muted ink; text actions use primary ink with minimal padding. Base padding is (10px 14px), gap (8px), weight (550). Hover changes fill/ink over (180ms); enabled active controls move down (1px). Disabled opacity is (.48). Focus uses a (2px) active-theme outline offset (3px). The generation action is (36px) minimum height beside resolution.
 
 ### Inputs / Fields
 
-Dark inset fills, fine blue edges and (9px 10px) padding. Fields use (12px) type; selects have a (39px) minimum height. The prompt textarea has a (110px) minimum height, vertical resize and (1.75) line-height. Real file inputs remain inside labeled upload targets with focus-within outlines. The source target is (110px) minimum height; after guidance it condenses to (72px). Reference uploads retain the local filename or localized saved-reference identity after language changes, including video references without thumbnails.
+Inset theme fill and one-pixel divider edge, (9px 10px) padding, field radius, native (12px) type. Selects have a (36px) minimum height. Prompt textareas start at (105px), resize vertically and use (1.65) line-height. Invalid fields receive the danger outline and adjacent named feedback. File targets retain real inputs and focus-within outlines; filenames may wrap anywhere. Requirements precede upload; validation covers format, size and video duration before submission.
 
 ### Navigation
 
-Recent tasks are stacked rail buttons, with a blue selected fill and pale cyan text. Filenames truncate and metadata stays beneath. Mobile history scrolls with items (145–180px) wide. The slim top bar offers language and API-key settings; settings replaces the workbench inline and focuses the DreamAPI password field.
+The top toolbar exposes task creation, history, paired day/night selection, language and keys. Appearance uses an inset segmented group with surface/ink selected state and `aria-pressed`. Theme choice persists locally and is applied before stylesheet paint; absent a stored choice, system appearance seeds it. History is a floating (330px) drawer rather than a permanent rail, with selected tasks in primary-soft/primary, truncated filenames and secondary metadata. Outside click and Escape close it; its close action returns focus to the trigger.
 
-### Status Badges and Containers
+### Chips / Status
 
-Small neutral badges use the media-ground fill. Configured, approved and complete states use green. Materials, viewer and settings use dark bordered panels. Settings has a (760px) maximum width and (25px 28px) desktop padding, with provider sections divided by a fine rule. Saved keys appear only as connection status. Errors use rose text on a dark rose block. Toasts use pale text on the deep cyan fill.
+Neutral badges use field/muted and approved badges use success-soft/success. Small rounded rectangles use (4px 7px) padding and native (11px) type. The model label is a compact outlined annotation with tabular figures, hidden on mobile.
 
-### Execution Sequence
+### Cards / Containers
 
-The signature panel combines a real stage count, elapsed time and connected phase markers. The initial eight-phase sequence is upload, vocals, depth, masks, guidance, review, generation and audio restoration; actual job phases come from the backend, including face tracking when applicable. Completed phases use green checks; active phases use cyan rotating rings; human review uses a cyan outlined waiting marker; failure uses rose. No synthetic completion percentage is shown. Error and recovery actions remain inside this panel.
+Viewer and inspector use unshadowed surface fills and the panel radius. The viewer has default padding (17px 20px 12px), inspector (18px), with compact responsive overrides. Settings uses the same material, capped at (760px), with provider sections divided by fine rules. Loaded video remains contain-fit with native playback controls; available media tabs expose `aria-pressed` and retain playback time where metadata permits.
 
-The main work indicator spins at (1s linear); active phase rings at (1.2s linear). The thin work bar pulses opacity from (.35) to (1) over (1.7s ease-in-out). Reduced-motion preference removes animation and transitions, retaining visible state and a (.6) opacity bar. Motion represents actual work, not decoration.
+### Execution and Review
 
-### Media Inspection and Review
+The compact strip always carries current state, actual stage count and desktop elapsed time. Detailed stages begin collapsed behind an `aria-expanded` control. Real backend stages drive completion, active, waiting and error markers; no fabricated percentage appears. Main execution rings rotate at (1s), stage rings at (1.2s); the thin status bar pulses over (1.7s). Reduced-motion preference removes animation and transitions while retaining textual state. Unchanged polling preserves strip position.
 
-Media tabs use neutral text, with deep cyan fill and cyan text when selected. Available Original, Guidance, Depth, Mask and Result views depend on real files. Tabs expose `aria-pressed`; switching retains playback time where metadata permits, clamped to duration. Review is an adjacent tinted block with a native checkbox, approval and conditional re-segmentation. Approved and completed messages use green-tinted blocks. Native video controls remain available; paid-action explanations stay with the action.
+Review uses primary-soft with a native checkbox and explicit approval; success blocks use success-soft. Original audio and paid-generation explanation remain adjacent to their relevant workflow action. Theme and language changes preserve source materials and user-entered prompt content.
+
+### Upload Targets and Feedback
+
+Source upload is centered and dashed; reference upload is a compact horizontal solid-edged row with optional thumbnail. Both use field fill, stronger edges and a primary-soft hover. Toasts float at top right, use danger or success semantic pairs, include a real close control, and use alert/status roles appropriately. Errors persist for (14s), success for (5s); hover pauses dismissal, mouse leave grants (8s). Matching field-level errors remain available beside the upload control.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** use icy cyan for primary actions and selected inspection controls.
-- **Do** pair stage colors with explicit text and distinct markers.
-- **Do** let Chinese and English labels wrap where space is constrained.
-- **Do** reveal the current, failed or review stage when pipeline state changes.
-- **Do** retain native video controls and the current inspection time when metadata permits.
+- **Do** resolve all UI colors through the active day/night semantic pair.
+- **Do** keep the generation footer outside the scrolling inspector on desktop.
+- **Do** use inline stroked SVG for interface icons and native video controls for inspection.
+- **Do** preserve entered prompts, source media and ongoing task state when switching appearance or language.
+- **Do** keep constraints near uploads and errors readable in both field feedback and dismissible toasts.
 
 ### Don't:
-- **Don't** make all actions primary; use secondary, quiet and text treatments for supporting actions.
-- **Don't** add decorative network graphs, invented metrics or fabricated completion percentages.
-- **Don't** apply container shadows; separation comes from tone and fine borders.
-- **Don't** restart pipeline animation or reset horizontal position during unchanged polling.
-- **Don't** use the elapsed-time monospace as a display or body font.
+- **Don't** turn night mode into a uniformly black science-fiction dashboard.
+- **Don't** add shadows to every working panel; reserve them for floating history and toasts.
+- **Don't** invent completion percentages, decorative metrics or pipeline states.
+- **Don't** replace Manrope headings with a system display face or apply Manrope to all operational copy.

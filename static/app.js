@@ -5,13 +5,29 @@ const WORKFLOW_DEFAULT_PROMPT = "Replace the complete selected subject with the 
 
 const copy = {
   zh: {
+    dayMode: "日间", nightMode: "夜间", close: "关闭", showSteps: "处理步骤", taskElapsed: "任务总耗时（包含等待与审核）", creativeOptions: "提示词与更多选项",
+    referenceLimits: "图片 PNG / JPG / WebP；视频 2–30 秒；每份 ≤100 MB。参考视频与原片合计 ≤30 秒。",
+    upload_format_source: "原始视频仅支持 MP4、MOV 或 WebM。建议使用 H.264 + AAC 的 MP4。",
+    upload_format_reference: "角色参考支持 PNG、JPG、WebP 图片，或 MP4、MOV、WebM 视频。",
+    upload_format_second: "第二个角色参考仅支持 PNG、JPG 或 WebP 图片。",
+    upload_size_source: "原始视频不能超过 500 MB，请压缩后重新选择。",
+    upload_size_reference: "角色参考不能超过 100 MB，请压缩后重新选择。",
+    upload_size_second: "第二个角色参考不能超过 100 MB，请压缩后重新选择。",
+    upload_duration_source: "原始视频需要为 4–30 秒，请先裁剪到符合要求的长度。",
+    upload_duration_reference: "身份参考视频需要为 2–30 秒。",
+    upload_empty_file: "这个文件是空的，请重新选择。",
+    upload_invalid_video: "浏览器无法读取这个视频，请改用可播放的 MP4（建议 H.264 + AAC）。",
+    upload_invalid_reference: "无法读取这张参考图片，请使用有效的 PNG、JPG 或 WebP。",
+    upload_reference_duration: "原片与身份参考视频总时长不能超过 30 秒，请缩短参考视频或改用图片。",
+    checkingFile: "正在检查文件格式与时长…",
+
     newTask: "新建任务", recent: "最近任务", historyEmpty: "任务会保留在这里，随时回来继续。",
     localWorkspace: "本地工作空间", workspace: "视频换角工作台", settings: "密钥设置",
-    title: "视频换角工作台", subtitle: "素材准备、动作引导、角色生成，在一条可恢复的工作流里完成。",
+    title: "视频换角 Studio", subtitle: "换一个角色，保留原片的动作与声音。",
     setupNotice: "首次使用，请先配置 DreamAPI 和 Replicate 密钥。", configure: "去配置",
     stepPrepare: "准备素材", stepReview: "检查引导", stepGenerate: "生成与导出",
     materials: "输入素材", sourceVideo: "原始视频", required: "必填", chooseVideo: "选择或拖入视频",
-    sourceHint: "4–30 秒 · MP4 / MOV / WebM · 含原声", advanced: "预处理选项",
+    sourceHint: "MP4 / MOV / WebM · 4–30 秒 · ≤500 MB · 含原声", advanced: "预处理选项",
     method: "引导方式", modeDepth: "深度 + 人物分割", modeMesh: "人脸网格 · 适合居中口播",
     modeBoth: "深度 + 分割 + 人脸网格", subject: "要替换的主体",
     subjectHint: "默认 person 会选择检测到的人物。多人时请仔细检查遮罩。",
@@ -99,13 +115,29 @@ const copy = {
     savedReference: "已保存的角色参考", paidRepairConfirm: "重新分割会再次调用 Replicate 并计费。继续吗？"
   },
   en: {
+    dayMode: "Day", nightMode: "Night", close: "Dismiss", showSteps: "Steps", taskElapsed: "Total task time, including waiting and review", creativeOptions: "Prompt & more options",
+    referenceLimits: "PNG / JPG / WebP images; 2–30 sec videos; ≤100 MB each. Source + identity video: ≤30 sec total.",
+    upload_format_source: "Source must be MP4, MOV or WebM. H.264 + AAC in MP4 is recommended.",
+    upload_format_reference: "Use a PNG, JPG or WebP image, or an MP4, MOV or WebM identity video.",
+    upload_format_second: "The second reference must be a PNG, JPG or WebP image.",
+    upload_size_source: "Source exceeds 500 MB. Compress it and choose the file again.",
+    upload_size_reference: "Character reference exceeds 100 MB. Compress it and choose again.",
+    upload_size_second: "Second reference exceeds 100 MB. Compress it and choose again.",
+    upload_duration_source: "Source must be 4–30 seconds. Trim the clip before choosing it again.",
+    upload_duration_reference: "Identity video must be 2–30 seconds.",
+    upload_empty_file: "This file is empty. Choose another file.",
+    upload_invalid_video: "Your browser could not read this video. Use a playable MP4, preferably H.264 + AAC.",
+    upload_invalid_reference: "Could not read this image. Use a valid PNG, JPG or WebP file.",
+    upload_reference_duration: "Source and identity video exceed 30 seconds combined. Shorten the reference or use an image.",
+    checkingFile: "Checking file format and duration…",
+
     newTask: "New task", recent: "Recent tasks", historyEmpty: "Your tasks stay here, ready to pick up later.",
     localWorkspace: "Local workspace", workspace: "Character replacement", settings: "API keys",
     title: "Character replacement studio", subtitle: "Prepare, inspect and generate with a workflow you can resume.",
     setupNotice: "Connect DreamAPI and Replicate to start your first task.", configure: "Connect",
     stepPrepare: "Prepare input", stepReview: "Review guidance", stepGenerate: "Generate & export",
     materials: "Input materials", sourceVideo: "Source video", required: "Required",
-    chooseVideo: "Choose or drop a video", sourceHint: "4–30 sec · MP4 / MOV / WebM · With audio",
+    chooseVideo: "Choose or drop a video", sourceHint: "MP4 / MOV / WebM · 4–30 sec · ≤500 MB · With audio",
     advanced: "Preparation options", method: "Guidance method", modeDepth: "Depth + subject masks",
     modeMesh: "Face mesh · Centered speakers", modeBoth: "Depth + masks + face mesh", subject: "Subject to replace",
     subjectHint: "The default “person” selects detected people. Review masks carefully for multiple subjects.",
@@ -212,14 +244,85 @@ let toastTimer;
 let historyItems = [];
 let actionBusy = false;
 let renderedPipelineKey = "";
+let validatingFiles = 0;
+let sourceValidated = false;
+let sourceSeconds = 0;
+let referenceSeconds = 0;
 const runningStates = ["preparing", "repairing", "submitting", "generating"];
 const t = (key) => copy[language][key] || copy[language].error_processing_error;
 
-function toast(message) {
+function toast(message, kind = "error", messageKey = "") {
   clearTimeout(toastTimer);
-  $("#toast").textContent = message;
+  $("#toast-message").textContent = message;
+  $("#toast").dataset.kind = kind;
+  $("#toast").dataset.messageKey = messageKey;
+  $("#toast").setAttribute("role", kind === "error" ? "alert" : "status");
+  $("#toast-icon-use").setAttribute("href", kind === "success" ? "#check" : "#info");
   $("#toast").hidden = false;
-  toastTimer = setTimeout(() => { $("#toast").hidden = true; }, 6500);
+  toastTimer = setTimeout(() => { $("#toast").hidden = true; }, kind === "error" ? 14000 : 5000);
+}
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  try { localStorage.setItem("genjustsu.theme", theme); } catch {}
+  $("#theme-light").setAttribute("aria-pressed", String(theme === "light"));
+  $("#theme-dark").setAttribute("aria-pressed", String(theme === "dark"));
+}
+
+function setFieldError(role, message, messageKey = "") {
+  const field = $(role === "source" ? "#source-error" : "#reference-error");
+  field.textContent = message;
+  field.dataset.messageKey = messageKey;
+  field.hidden = !message;
+  $(role === "source" ? "#source-file" : role === "second" ? "#second-reference" : "#reference-file").setAttribute("aria-invalid", String(Boolean(message)));
+}
+
+function readMedia(file, video) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const media = video ? document.createElement("video") : new Image();
+    const cleanup = () => { clearTimeout(timeout); URL.revokeObjectURL(url); if (video) { media.removeAttribute("src"); media.load(); } };
+    const fail = () => { cleanup(); reject(new Error(video ? "invalid_video" : "invalid_reference")); };
+    const timeout = setTimeout(fail, 15000);
+    const loaded = () => { const duration = video ? media.duration : 0; cleanup(); resolve(duration); };
+    media.onerror = fail;
+    if (video) { media.preload = "metadata"; media.onloadedmetadata = loaded; } else media.onload = loaded;
+    media.src = url;
+  });
+}
+
+async function validateSelection(input, role) {
+  const file = input.files[0];
+  if (!file) return null;
+  setFieldError(role, "");
+  validatingFiles++;
+  input.setAttribute("aria-busy", "true");
+  renderJob();
+  try {
+    let error = MediaValidation.fileError(file, role);
+    if (error) throw new Error(error);
+    const video = /\.(mp4|mov|webm)$/i.test(file.name);
+    const duration = await readMedia(file, video);
+    if (input.files[0] !== file) return undefined;
+    if (video) {
+      error = MediaValidation.durationError(duration, role, role === "reference" ? (job?.duration || sourceSeconds) : 0);
+      if (error) throw new Error(error);
+    }
+    return {file, duration};
+  } catch (error) {
+    if (input.files[0] !== file) return undefined;
+    if (input.files[0] === file) {
+      input.value = "";
+      const message = t("upload_" + error.message);
+      setFieldError(role, message, "upload_" + error.message);
+      toast(message, "error", "upload_" + error.message);
+    }
+    return null;
+  } finally {
+    validatingFiles--;
+    input.setAttribute("aria-busy", "false");
+    renderJob();
+  }
 }
 
 async function api(url, options = {}) {
@@ -245,6 +348,18 @@ function applyLanguage() {
     element.textContent = t(element.dataset.i18n);
   });
   $("#language").textContent = language === "zh" ? "EN" : "中文";
+  document.querySelectorAll("[data-i18n-title]").forEach(element => {
+    element.title = t(element.dataset.i18nTitle);
+    if (element.tagName === "BUTTON") element.setAttribute("aria-label", t(element.dataset.i18nTitle));
+  });
+  for (const element of [$("#source-error"), $("#reference-error"), $("#toast")]) {
+    if (element.dataset.messageKey) {
+      const content = element.id === "toast" ? $("#toast-message") : element;
+      content.textContent = t(element.dataset.messageKey);
+    }
+  }
+  $("#toast-close").setAttribute("aria-label", t("close"));
+  $("#history-close").setAttribute("aria-label", t("close"));
   updatePromptCount();
   renderKeys();
   renderHistory();
@@ -253,6 +368,7 @@ function applyLanguage() {
 }
 
 function showSettings(visible) {
+  if (visible) { $("#history-drawer").hidden = true; $("#history-open").setAttribute("aria-expanded", "false"); }
   $("#settings-view").hidden = !visible;
   $("#workspace").hidden = visible;
   if (visible) $("#dreamapi-key").focus();
@@ -337,7 +453,7 @@ function renderLocalSource() {
   const file = $("#source-file").files[0];
   $("#source-name").textContent = file ? file.name : t("chooseVideo");
   if (!file || !sourceURL) return;
-  $("#preview-video").src = sourceURL;
+  if ($("#preview-video").getAttribute("src") !== sourceURL) $("#preview-video").src = sourceURL;
   $("#preview-video").hidden = false;
   $("#empty-preview").hidden = true;
   $("#media-stage").classList.add("has-video");
@@ -355,11 +471,11 @@ function renderJob() {
   $("#generate-button span").textContent = t(busy && ["submitting", "generating"].includes(job.state) ? "generatingAction" : "generate");
   $("#prepare-button").setAttribute("aria-busy", String(actionBusy || busy));
   $("#generate-button").setAttribute("aria-busy", String(actionBusy || busy));
-  $("#prepare-button").disabled = actionBusy || busy || Boolean(job) || !keys.replicate;
+  $("#prepare-button").disabled = actionBusy || busy || Boolean(job) || !keys.replicate || !sourceValidated || validatingFiles > 0;
   $("#source-file").disabled = Boolean(job);
   $("#mode").disabled = Boolean(job);
   $("#subject").disabled = Boolean(job);
-  $("#generate-button").disabled = actionBusy || !job || !keys.dreamapi || !job.review?.approved ||
+  $("#generate-button").disabled = actionBusy || validatingFiles > 0 || !job || !keys.dreamapi || !job.review?.approved ||
     !["ready", "error"].includes(job.state) || Boolean(job.task_submitted);
   $("#reference-file").disabled = busy || Boolean(job?.task_submitted);
   $("#second-reference").disabled = busy || Boolean(job?.task_submitted);
@@ -385,7 +501,7 @@ function renderJob() {
   $("#repair-hint").hidden = job?.mode === "face_mesh";
   $("#duration-note").hidden = !job?.duration_adjusted;
   if (!job) {
-    $("#source-duration").textContent = "";
+    $("#source-duration").textContent = validatingFiles ? t("checkingFile") : sourceSeconds ? sourceSeconds.toFixed(1) + " " + t("clipSeconds") : "";
       return;
   }
   $("#source-name").textContent = job.name;
@@ -448,6 +564,7 @@ function renderExecution() {
   }
   $("#execution-title").textContent = title;
   $("#execution-description").textContent = description;
+  $("#execution-description").title = description;
   const fallback = ["input", "audio", "depth", "mask", "composite", "review", "generate", "restore"].map(id => ({id, state: "pending"}));
   const stages = job?.pipeline || fallback;
   $("#execution-count").textContent = stages.filter(stage => stage.state === "done").length + " / " + stages.length;
@@ -506,7 +623,7 @@ async function pollJob(ident) {
     if (runningStates.includes(job.state)) pollTimer = setTimeout(() => pollJob(ident), 2500);
   } catch (error) {
     if (ident !== jobId) return;
-    toast(errorMessage(error));
+    toast(errorMessage(error), "error", "error_" + error.message);
     pollTimer = setTimeout(() => pollJob(ident), 8000);
   }
 }
@@ -515,6 +632,10 @@ function clearFiles() {
   if (sourceURL) URL.revokeObjectURL(sourceURL);
   if (referenceURL) URL.revokeObjectURL(referenceURL);
   sourceURL = referenceURL = "";
+  sourceValidated = false;
+  sourceSeconds = referenceSeconds = 0;
+  setFieldError("source", "");
+  setFieldError("reference", "");
   $("#source-file").value = "";
   $("#reference-file").value = "";
   $("#second-reference").value = "";
@@ -534,6 +655,8 @@ function clearFiles() {
 }
 
 async function selectJob(ident) {
+  $("#history-drawer").hidden = true;
+  $("#history-open").setAttribute("aria-expanded", "false");
   clearTimeout(pollTimer);
   clearFiles();
   jobId = ident;
@@ -562,6 +685,8 @@ async function selectJob(ident) {
 }
 
 function newTask() {
+  $("#history-drawer").hidden = true;
+  $("#history-open").setAttribute("aria-expanded", "false");
   clearTimeout(pollTimer);
   jobId = job = previousState = null;
   selectedPreview = "";
@@ -594,10 +719,23 @@ $("#settings-open").onclick = $("#setup-open").onclick = () => showSettings(true
 $("#settings-back").onclick = () => showSettings(false);
 $("#prompt").oninput = () => { $("#prompt").dataset.edited = "true"; updatePromptCount(); };
 
-$("#source-file").onchange = () => {
+$("#source-file").onchange = async () => {
+  sourceValidated = false;
+  const selected = await validateSelection($("#source-file"), "source");
+  if (selected === undefined) return;
   if (sourceURL) URL.revokeObjectURL(sourceURL);
-  sourceURL = $("#source-file").files[0] ? URL.createObjectURL($("#source-file").files[0]) : "";
+  sourceURL = selected ? URL.createObjectURL(selected.file) : "";
+  sourceSeconds = selected?.duration || 0;
+  sourceValidated = Boolean(selected);
+  if (!selected) {
+    $("#preview-video").removeAttribute("src");
+    $("#preview-video").load();
+    $("#preview-video").hidden = true;
+    $("#empty-preview").hidden = false;
+    $("#media-stage").classList.remove("has-video");
+  }
   renderLocalSource();
+  renderJob();
 };
 for (const event of ["dragenter", "dragover"]) $("#source-drop").addEventListener(event, (e) => {
   e.preventDefault();
@@ -613,27 +751,50 @@ $("#source-drop").addEventListener("drop", (e) => {
   $("#source-file").files = transfer.files;
   $("#source-file").dispatchEvent(new Event("change"));
 });
-$("#reference-file").onchange = () => {
-  const file = $("#reference-file").files[0];
-  if (!file) return;
-  $("#reference-name").textContent = file.name;
+$("#reference-file").onchange = async () => {
+  const selected = await validateSelection($("#reference-file"), "reference");
+  if (selected === undefined) return;
+  referenceSeconds = selected?.duration || 0;
   if (referenceURL) URL.revokeObjectURL(referenceURL);
-  const image = /\.(png|jpe?g|webp)$/i.test(file.name);
+  referenceURL = "";
+  const image = selected && /\.(png|jpe?g|webp)$/i.test(selected.file.name);
   $("#reference-image").hidden = !image;
-  $("#reference-icon").toggleAttribute("hidden", image);
+  $("#reference-icon").toggleAttribute("hidden", Boolean(image));
   if (image) {
-    referenceURL = URL.createObjectURL(file);
+    referenceURL = URL.createObjectURL(selected.file);
     $("#reference-image").src = referenceURL;
   }
+  renderJob();
 };
-$("#second-reference").onchange = () => {
-  $("#second-name").textContent = $("#second-reference").files[0]?.name || "";
+$("#second-reference").onchange = async () => {
+  const selected = await validateSelection($("#second-reference"), "second");
+  $("#second-name").textContent = selected?.file.name || "";
 };
+
+$("#theme-light").onclick = () => setTheme("light");
+$("#theme-dark").onclick = () => setTheme("dark");
+$("#toast-close").onclick = () => { clearTimeout(toastTimer); $("#toast").hidden = true; };
+$("#toast").onmouseenter = () => clearTimeout(toastTimer);
+$("#toast").onmouseleave = () => { toastTimer = setTimeout(() => { $("#toast").hidden = true; }, 8000); };
+$("#history-open").onclick = () => {
+  const open = $("#history-drawer").hidden;
+  $("#history-drawer").hidden = !open;
+  $("#history-open").setAttribute("aria-expanded", String(open));
+};
+$("#history-close").onclick = () => { $("#history-drawer").hidden = true; $("#history-open").setAttribute("aria-expanded", "false"); $("#history-open").focus(); };
+$("#pipeline-toggle").onclick = () => { const open = $("#pipeline").hidden; $("#pipeline").hidden = !open; $("#pipeline-toggle").setAttribute("aria-expanded", String(open)); };
+$("#canvas-upload").onclick = () => $("#source-file").click();
+document.addEventListener("click", event => {
+  if (!$("#history-drawer").hidden && !event.target.closest("#history-drawer, #history-open")) {
+    $("#history-drawer").hidden = true; $("#history-open").setAttribute("aria-expanded", "false");
+  }
+});
+document.addEventListener("keydown", event => { if (event.key === "Escape") { $("#toast-close").click(); if (!$("#history-drawer").hidden) $("#history-close").click(); } });
 
 $("#source-form").onsubmit = async (event) => {
   event.preventDefault();
   if (job || actionBusy) return;
-  if (!$("#source-file").files.length) return toast(t("selectSource"));
+  if (!$("#source-file").files.length || !sourceValidated || validatingFiles) return toast(t("selectSource"));
   actionBusy = true;
   renderJob();
   try {
@@ -646,9 +807,11 @@ $("#source-form").onsubmit = async (event) => {
     selectedPreview = "";
     await refreshHistory();
     await pollJob(jobId);
-    toast(t("jobCreated"));
+    toast(t("jobCreated"), "success");
   } catch (error) {
-    toast(errorMessage(error));
+    const message = errorMessage(error);
+    if (["audio_required", "duration_range", "invalid_video", "file_too_large", "empty_file"].includes(error.message)) setFieldError("source", message, "error_" + error.message);
+    toast(message, "error", "error_" + error.message);
   } finally {
     actionBusy = false;
     renderJob();
@@ -666,7 +829,7 @@ $("#approve-button").onclick = async () => {
     });
     await pollJob(jobId);
   } catch (error) {
-    toast(errorMessage(error));
+    toast(errorMessage(error), "error", "error_" + error.message);
     $("#approve-button").disabled = !$("#review-check").checked;
   }
 };
@@ -676,7 +839,7 @@ $("#repair-button").onclick = async () => {
   try {
     await api("/api/jobs/" + jobId + "/repair", {method: "POST"});
     await pollJob(jobId);
-  } catch (error) { toast(errorMessage(error)); }
+  } catch (error) { toast(errorMessage(error), "error", "error_" + error.message); }
   finally { $("#repair-button").disabled = false; }
 };
 
@@ -697,6 +860,11 @@ $("#generate-form").onsubmit = async (event) => {
   try {
     const reference = await referenceFile($("#reference-file"), 1);
     if (!reference) throw new Error("select_reference");
+    if (referenceSeconds && MediaValidation.durationError(referenceSeconds, "reference", job.duration)) {
+      const message = t("upload_reference_duration");
+      setFieldError("reference", message);
+      throw new Error("reference_duration");
+    }
     const data = new FormData(event.target);
     data.set("reference", reference);
     const second = await referenceFile($("#second-reference"), 2);
@@ -717,7 +885,7 @@ $("#resume-prepare-button").onclick = async () => {
   try {
     await api("/api/jobs/" + jobId + (job?.retry_preparation_stage ? "/retry-preparation" : "/resume-preparation"), {method: "POST"});
     await pollJob(jobId);
-  } catch (error) { toast(errorMessage(error)); }
+  } catch (error) { toast(errorMessage(error), "error", "error_" + error.message); }
   finally { $("#resume-prepare-button").disabled = false; }
 };
 
@@ -726,7 +894,7 @@ $("#resume-button").onclick = async () => {
   try {
     await api("/api/jobs/" + jobId + "/resume", {method: "POST"});
     await pollJob(jobId);
-  } catch (error) { toast(errorMessage(error)); }
+  } catch (error) { toast(errorMessage(error), "error", "error_" + error.message); }
   finally { $("#resume-button").disabled = false; }
 };
 
@@ -742,8 +910,8 @@ for (const form of document.querySelectorAll(".key-form")) {
       });
       input.value = "";
       await refreshKeys();
-      toast(t("keySaved"));
-    } catch (error) { toast(errorMessage(error)); }
+      toast(t("keySaved"), "success");
+    } catch (error) { toast(errorMessage(error), "error", "error_" + error.message); }
     finally { button.disabled = false; }
   };
 }
@@ -754,14 +922,15 @@ for (const button of document.querySelectorAll(".remove-key")) {
     try {
       await api("/api/keys/" + button.dataset.provider, {method: "DELETE"});
       await refreshKeys();
-      toast(t("keyRemoved"));
-    } catch (error) { toast(errorMessage(error)); }
+      toast(t("keyRemoved"), "success");
+    } catch (error) { toast(errorMessage(error), "error", "error_" + error.message); }
     finally { button.disabled = false; }
   };
 }
 
 async function boot() {
   $("#prompt").value = WORKFLOW_DEFAULT_PROMPT;
+  setTheme(document.documentElement.dataset.theme || "light");
   applyLanguage();
   try {
     token = (await api("/api/session")).token;
@@ -769,6 +938,6 @@ async function boot() {
     await refreshHistory();
     const saved = localStorage.getItem("genjustsu.lastTask");
     if (saved && historyItems.some((item) => item.id === saved)) await selectJob(saved);
-  } catch (error) { toast(errorMessage(error)); }
+  } catch (error) { toast(errorMessage(error), "error", "error_" + error.message); }
 }
 boot();

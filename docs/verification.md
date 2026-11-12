@@ -22,3 +22,11 @@ The existing paid generation completed successfully. Local restart recovery cont
 
 This validates one single-subject Depth + SAM workflow with an image identity reference at 720p. It does not establish quality across all subjects, fast/combined mesh modes or other resolutions. Replicate queue and inference time can dominate preparation latency; HTTP 200 on a status read means the request succeeded, not that the cloud job finished. Fine facial likeness and lip-sync remain visual judgments, not guarantees from a successful status.
 
+
+## Day/night Studio iteration
+
+The PC-first layout was inspected in actual Chrome at 1024×768, 1280×720, 1366×768, 1440×900 and 1920×1080, in both appearances. Document bounds matched each viewport, with generation and download controls visible. Advanced settings scroll within the inspector while the output controls stay anchored. Theme changes preserve selected material, prompt contents and the current media URL/frame; saved appearance restores on reload. Native body/CJK typography is paired with the locally hosted Manrope heading face (SIL OFL).
+
+Browser file-picker checks rejected an empty file, a one-second source, a source above 500 MB, and a six-second source combined with a 29-second identity video. A valid six-second video was accepted for local preview. Field feedback and dismissible toasts were checked in both languages; only UI wording changes on language switches. Audio-track validation remains authoritative on the server before a paid worker can start. No new paid generation was submitted in this appearance iteration.
+
+31 Python tests and 14 JavaScript boundary assertions pass. Taste copy lint reports 0 FAIL and 0 WARN. Marketing-page hero/effect prescriptions are not applied to this existing PC editing tool; verification uses its actual working UI. The final font/contrast correction has four updated captures, with full post-fix viewport recapture pending manual unlock of the Mac.

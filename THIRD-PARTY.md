@@ -11,3 +11,7 @@ Replicate hosts Demucs htdemucs, Depth Anything video and SAM 3 models. Those se
 DreamAPI provides Seedance 2.5 and media storage. Service availability, real-person reference handling, billing and generated media use remain subject to provider and model terms.
 
 No upstream demonstration footage or TEIN brand assets are included.
+
+## Manrope heading font
+
+The locally hosted Manrope variable font is distributed under the SIL Open Font License 1.1. Source: [Google Fonts](https://fonts.google.com/specimen/Manrope), [google/fonts repository](https://github.com/google/fonts/tree/main/ofl/manrope). The complete license is included at `static/fonts/OFL-Manrope.txt`. Native platform fonts remain the body and Chinese fallback fonts.

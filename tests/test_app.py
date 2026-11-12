@@ -97,6 +97,20 @@ class LocalAppTests(unittest.TestCase):
         self.assertEqual(self.client.get(f"/api/jobs/{ident}/files/job.json").status_code, 404)
         self.assertEqual(self.client.get(f"/api/jobs/{ident}/files/upload.mp4").status_code, 200)
 
+    def test_source_requirements_reject_before_any_paid_worker_starts(self):
+        from test_audio_alignment import clip
+        self.secrets["replicate"] = "test-key"
+        for count, audio, expected in [(72, True, "duration_range"), (144, False, "audio_required")]:
+            source = Path(self.directory.name) / "candidate.mp4"
+            clip(source, count, audio=audio)
+            with patch("jobs.start_worker") as worker:
+                result = self.client.post("/api/jobs", headers=self.headers,
+                    files={"video": ("candidate.mp4", source.read_bytes(), "video/mp4")})
+            self.assertEqual(result.status_code, 400)
+            self.assertEqual(result.json()["detail"], expected)
+            worker.assert_not_called()
+            self.assertEqual(jobs.list_jobs(), [])
+
     def test_nonexistent_job_and_missing_key_are_actionable(self):
         self.assertEqual(self.client.get("/api/jobs/" + "f" * 32).status_code, 404)
         response = self.client.post("/api/jobs", headers=self.headers, files={"video": ("source.mp4", b"bad")})

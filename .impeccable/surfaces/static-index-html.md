@@ -6,14 +6,14 @@ related_targets: ["static/style.css","static/app.js"]
 ---
 
 # Main workbench
-Mode: Operate. Code-led implementation. User explicitly requests a second version and delegates testing while away.
-Scope: local macOS single-user video recasting, bilingual interface, keys, preparation, full-clip review, direct generation and export. Core upstream prompts remain unchanged.
+Mode: Operate. Code-led. User explicitly delegates this iteration while at lunch.
+Scope: day/night themes, improved visual craft, one-screen desktop studio, early upload constraints and readable toasts. Preserve bilingual UI, upstream prompts, paid-task semantics and all saved jobs.
 
 ## Direction contract
-THESIS: A visible execution sequence makes cloud work understandable and recoverable while keeping the media and next action central.
-OWN-WORLD: User-pinned NEXUS telemetry reference (https://www.douyin.com/video/7705833292104305954): near-black blue surfaces, icy cyan, fine rules, pale text, compact measurement. Animate only genuine work; no invented network graphs or metrics.
-STORY: Add source and character, prepare, watch the whole guidance, approve, generate and export. On failure, show recovery above the fold and preserve completed paid stages.
-FIRST VIEWPORT: Narrow dark task rail; language and key settings in a slim top bar; sticky execution status across the workspace; material form on the left and larger media viewer on the right. The error and recovery action live in the execution status.
-FORM: User-pinned dark NEXUS direction overrides the seed assignment (seed:309248ed81ec8174). Existing media comparison topology retained for this precise working scene; no new concept selection required under the user's delegated instruction. Thin connectors borrow the reference's temporal continuity and report actual completed stages rather than fabricated percentages.
-SIGNATURE: The eight real phases progress from upload to original-audio restoration; preparing, queueing, processing, human review, interruption and completion have different visible meanings. Preview tabs retain playback position and repaired guidance changes media version.
+THESIS: A single-screen editing desk gives the footage the largest uninterrupted area and keeps the next action within reach. Advanced controls expand inside the inspector.
+OWN-WORLD: A contemporary production folder: porcelain and brushed-silver daytime surfaces, deep petroleum-blue nighttime surfaces, forest-green and citron action tones, precise inset edges and restrained frame brackets. A shared typographic scale makes these two intentional working environments, not an inverted black page.
+STORY: Bring the source and identity together, prepare, inspect, approve, generate and export. Constraints are explained before upload. Current status stays visible; detailed stages are opt-in. History is a drawer.
+FIRST VIEWPORT: A horizontal brand/tools bar; compact work title and execution strip; broad viewer at left and 340px material inspector at right. The desktop work area occupies the remaining viewport height. Inspector expansion scrolls within its own region; 390px layouts stack naturally.
+FORM: Assigned grounded direction 6, contemporary production folder, seed:b9b33cef40fb0c0c. Candidates were photographic contact sheets, film production slates, silver object catalogs, negative proof sleeves, gallery passepartouts, production folders, and film magazines. Reference challenges supplied legibility and bounded work zones; literal display-board costumes were declined. User's one-screen task and explicit day/night brief outrank marketing-page hero prescriptions from taste.
+SIGNATURE: Day/night switches preserve the exact frame, entered materials and ongoing task. Only UI tokens change. Upload errors name format, size or duration and remain readable with a dismissible toast plus field-level feedback.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

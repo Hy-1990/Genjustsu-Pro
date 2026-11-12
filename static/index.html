@@ -3,17 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="light dark">
+  <script src="/static/theme.js?v=4"></script>
   <title>Genjustsu Pro</title>
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=3">
-  <script src="/static/app.js?v=3" defer></script>
+  <link rel="preload" href="/static/fonts/Manrope-Variable.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="/static/style.css?v=4">
+  <script src="/static/media-validation.js?v=4" defer></script>
+  <script src="/static/app.js?v=4" defer></script>
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar" aria-label="Tasks">
-      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true">G</span><span>Genjustsu <b>Pro</b></span></a>
-      <button class="new-task primary" id="new-task"><svg><use href="#plus"/></svg><span data-i18n="newTask">新建任务</span></button>
+    <aside class="sidebar" id="history-drawer" aria-label="Tasks" hidden>
+      <button class="icon-button drawer-close" id="history-close" type="button" data-i18n-title="close" aria-label="Close"><svg><use href="#close-icon"/></svg></button>
       <div class="history-heading"><h2 data-i18n="recent">最近任务</h2><span id="task-count">0</span></div>
       <div class="history" id="history"></div>
       <p class="history-empty" id="history-empty" data-i18n="historyEmpty">完成的任务会保留在这里，随时回来继续。</p>
@@ -21,8 +23,11 @@
     </aside>
     <div class="main-shell">
       <header class="topbar">
-        <span class="breadcrumb" data-i18n="workspace">视频换角工作台</span>
+        <a class="brand" href="/"><svg class="brand-mark" aria-hidden="true"><use href="#brand-icon"/></svg><span>Genjustsu <b>Pro</b></span></a>
         <div class="toolbar">
+          <button class="new-task secondary" id="new-task"><svg><use href="#plus"/></svg><span data-i18n="newTask">新建任务</span></button>
+          <button class="quiet history-trigger" id="history-open" aria-controls="history-drawer" aria-expanded="false"><svg><use href="#history-icon"/></svg><span data-i18n="recent">最近任务</span></button>
+          <div class="theme-switch" role="group" aria-label="Appearance"><button id="theme-light" type="button" data-i18n-title="dayMode" aria-label="Day mode" aria-pressed="false"><svg><use href="#sun-icon"/></svg><span data-i18n="dayMode">日间</span></button><button id="theme-dark" type="button" data-i18n-title="nightMode" aria-label="Night mode" aria-pressed="false"><svg><use href="#moon-icon"/></svg><span data-i18n="nightMode">夜间</span></button></div>
           <button class="language-button" id="language" aria-label="Switch language">EN</button>
           <button class="quiet settings-trigger" id="settings-open"><svg><use href="#settings"/></svg><span data-i18n="settings">密钥设置</span><span class="key-dot" id="key-dot"></span></button>
         </div>
@@ -34,23 +39,25 @@
           <section class="execution-panel" id="execution-panel" aria-label="Execution progress" aria-live="polite">
             <div class="execution-heading">
               <div class="execution-state"><span class="execution-indicator" id="execution-indicator"></span><div><h2 id="execution-title" data-i18n="monitorIdle">等待输入素材</h2><p id="execution-description" data-i18n="monitorIdleCopy">配置素材后，整个处理过程会在这里实时展示。</p></div></div>
-              <div class="execution-metrics"><span id="execution-count">0 / 8</span><span id="execution-elapsed">00:00</span></div>
+              <div class="execution-metrics"><span id="execution-count">0 / 8</span><span id="execution-elapsed" data-i18n-title="taskElapsed">00:00</span><button class="quiet pipeline-toggle" id="pipeline-toggle" type="button" aria-expanded="false" aria-controls="pipeline"><span data-i18n="showSteps">处理步骤</span><svg><use href="#chevron-icon"/></svg></button></div>
             </div>
-            <div class="pipeline" id="pipeline" role="list" aria-label="Pipeline stages"></div>
+            <div class="pipeline" id="pipeline" hidden role="list" aria-label="Pipeline stages"></div>
             <div class="task-progress" id="task-progress" hidden role="status"><div class="progress-head"><span class="progress-dot"></span><strong id="progress-title"></strong><span class="metadata" id="progress-time"></span></div><p id="progress-copy"></p><div class="progress-track"><span></span></div></div>
             <div class="error-panel" id="job-error" hidden role="alert"><strong data-i18n="attention">任务需要处理</strong><p id="job-error-message"></p><button class="secondary" id="resume-prepare-button" hidden data-i18n="resumePreparation">继续准备引导</button><button class="secondary" id="resume-button" hidden data-i18n="resume">继续获取结果</button></div>
           </section>
           <div class="workbench">
             <section class="materials" aria-labelledby="materials-title">
               <div class="panel-heading"><h2 id="materials-title" data-i18n="materials">输入素材</h2><span id="source-duration" class="metadata"></span></div>
+              <div class="inspector-scroll">
               <form id="source-form">
                 <div class="field-heading"><label for="source-file" data-i18n="sourceVideo">原始视频</label><span class="required" data-i18n="required">必填</span></div>
                 <label class="drop-zone" id="source-drop" for="source-file">
                   <svg class="upload-icon"><use href="#upload"/></svg>
                   <strong id="source-name" data-i18n="chooseVideo">选择或拖入视频</strong>
-                  <span data-i18n="sourceHint">4–30 秒 · MP4 / MOV / WebM · 含原声</span>
+                  <span data-i18n="sourceHint">MP4 / MOV / WebM · 4–30 秒 · ≤500 MB · 含原声</span>
                   <input id="source-file" name="video" type="file" accept=".mp4,.mov,.webm" required>
                 </label>
+                <p id="source-error" class="field-error" role="alert" hidden></p>
                 <details class="advanced">
                   <summary data-i18n="advanced">预处理选项</summary>
                   <label for="mode" data-i18n="method">引导方式</label>
@@ -76,6 +83,9 @@
                   <svg class="small-icon"><use href="#plus"/></svg>
                   <input id="reference-file" name="reference" type="file" accept=".png,.jpg,.jpeg,.webp,.mp4,.mov,.webm">
                 </label>
+                <p class="reference-limits" data-i18n="referenceLimits">图片 PNG / JPG / WebP；视频 2–30 秒；每份 ≤100 MB。</p>
+                <p id="reference-error" class="field-error" role="alert" hidden></p>
+                <details class="creative-options"><summary><svg><use href="#settings"/></svg><span data-i18n="creativeOptions">提示词与更多选项</span></summary>
                 <details class="second-reference">
                   <summary data-i18n="addSecond">添加第二个角色参考（可选）</summary>
                   <label class="file-button" for="second-reference" data-i18n="chooseImage">选择参考图片</label>
@@ -85,11 +95,11 @@
                 <div class="field-heading prompt-heading"><label for="prompt" data-i18n="prompt">替换说明</label><span class="metadata" id="prompt-count">0 / 950</span></div>
                 <textarea id="prompt" name="prompt" rows="4" maxlength="950" required></textarea>
                 <p class="field-help" data-i18n="promptHint">描述人物如何替换。多个角色需注明与原片人物的对应关系。</p>
-                <label class="resolution-label" for="resolution" data-i18n="resolution">输出分辨率</label>
-                <select id="resolution" name="resolution"><option value="480p">480p</option><option value="720p" selected>720p</option><option value="1080p">1080p</option></select>
-                <button class="primary full-width generate-button" id="generate-button" disabled><svg><use href="#spark"/></svg><span data-i18n="generate">生成完整视频</span></button>
-                <p class="cost-note" id="generate-help" data-i18n="generationGate">先准备并批准引导视频，即可生成。</p>
+                </details>
+
               </form>
+              </div>
+              <div class="generation-footer"><div class="output-actions"><div class="resolution-control"><label class="resolution-label" for="resolution" data-i18n="resolution">输出分辨率</label><select form="generate-form" id="resolution" name="resolution"><option value="480p">480p</option><option value="720p" selected>720p</option><option value="1080p">1080p</option></select></div><button class="primary full-width generate-button" id="generate-button" form="generate-form" disabled><svg><use href="#spark"/></svg><span data-i18n="generate">生成完整视频</span></button></div><p class="cost-note" id="generate-help" data-i18n="generationGate">先准备并批准引导视频，即可生成。</p></div>
             </section>
             <section class="preview-panel" aria-labelledby="preview-title">
               <div class="panel-heading"><h2 id="preview-title" data-i18n="preview">视频预览</h2><span class="status-badge" id="state-label" data-i18n="stateIdle">等待素材</span></div>
@@ -97,13 +107,14 @@
               <div class="media-stage" id="media-stage">
                 <video id="preview-video" controls playsinline preload="metadata" hidden></video>
                 <div class="empty-preview" id="empty-preview">
-                  <svg class="film-icon"><use href="#film"/></svg>
+                  <div class="empty-frame" aria-hidden="true"><svg><use href="#film"/></svg></div>
                   <h3 data-i18n="emptyTitle">从一段原始视频开始</h3>
                   <p data-i18n="emptyCopy">上传素材后，在这里对照原片、动作引导与最终结果。</p>
-                  <span class="empty-formats">MP4 · MOV · WebM</span>
+                  <button class="secondary empty-upload" id="canvas-upload" type="button"><svg><use href="#plus"/></svg><span data-i18n="chooseVideo">选择或拖入视频</span></button>
+                  <span class="empty-formats" data-i18n="sourceHint">MP4 / MOV / WebM · 4–30 秒 · ≤500 MB · 含原声</span>
                 </div>
               </div>
-              <div class="viewer-footer"><span id="preview-caption" data-i18n="originalAudio">最终成片保留原始音轨</span><a id="download" class="text-button" download hidden><svg><use href="#download"/></svg><span data-i18n="download">下载视频</span></a></div>
+              <div class="viewer-footer"><span id="preview-caption" data-i18n="originalAudio">最终成片保留原始音轨</span><a id="download" class="text-button" download hidden><svg><use href="#download-icon"/></svg><span data-i18n="download">下载视频</span></a></div>
               <div class="review-panel" id="review-panel" hidden>
                 <div class="review-heading"><svg><use href="#check"/></svg><h3 data-i18n="reviewTitle">生成前，检查整段视频</h3></div>
                 <p data-i18n="reviewCopy">确认头发、手和衣服都在遮罩内，背景没有被误选；人脸网格需全程贴合。听一下人声与动作是否同步。</p>
@@ -141,14 +152,20 @@
             <p class="field-help" data-i18n="keyBilling">保存密钥仅连接账户，实际处理会按各平台用量计费。账户需要有可用额度。</p>
           </div>
         </section>
-        <div class="toast" id="toast" role="status" hidden></div>
+        <div class="toast" id="toast" role="status" hidden><svg class="toast-icon"><use id="toast-icon-use" href="#info"/></svg><span id="toast-message"></span><button id="toast-close" type="button" class="icon-button" aria-label="Close"><svg><use href="#close-icon"/></svg></button></div>
       </main>
     </div>
   </div>
   <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="brand-icon" viewBox="0 0 32 32"><path d="M12 4H4v24h8M20 4h8v24h-8M12 11l10 5-10 5Z"/></symbol>
+    <symbol id="sun-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+    <symbol id="moon-icon" viewBox="0 0 24 24"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></symbol>
+    <symbol id="history-icon" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.5-6.2L3 8m0-5v5h5M12 7v5l3 2"/></symbol>
+    <symbol id="close-icon" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="chevron-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
     <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v4h16v-4"/></symbol>
-    <symbol id="download" viewBox="0 0 24 24"><path d="M12 3v13m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol>
+    <symbol id="download-icon" viewBox="0 0 24 24"><path d="M12 3v13m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol>
     <symbol id="settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3"/><circle cx="15" cy="17" r="3"/></symbol>
     <symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="9" r="5"/><path d="m12 13 8 8m-3-3 3-3m-6 0 3-3"/></symbol>
     <symbol id="person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol>
