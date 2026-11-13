@@ -10,6 +10,14 @@
 
 > **需要自备 API 密钥。** 页面和媒体处理程序在本机运行，AI 推理由付费云服务完成。需要有可用余额的 DreamAPI、Replicate 账户。建议从单人清晰可见、带音轨的 4–30 秒素材开始。
 
+## 看看实际效果
+
+[![Henge 原视频与实际换角结果对比](docs/assets/demo-preview.zh-CN.gif)](docs/assets/henge-x-zh-CN.mp4)
+
+[观看 20 秒演示](docs/assets/henge-x-zh-CN.mp4) · [原视频](docs/assets/demo-source.mp4) · [角色参考](docs/assets/demo-reference.jpg) · [完整换角结果](docs/assets/demo-result.mp4)
+
+人物素材为本项目原创生成。前后对比来自同一次 Henge 换角任务的实际结果；宣传片省略了处理等待时间。
+
 ## 三步完成换角
 
 ![原片和角色参考、引导制作与审核、云端生成及本地原声恢复流程](docs/assets/workflow.zh-CN.svg)

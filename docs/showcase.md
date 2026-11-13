@@ -24,9 +24,13 @@ This is evidence for one workflow, not a general success-rate benchmark. Fine id
 
 ## Public demonstration video
 
-A new demonstration using original fictional characters is being prepared. Previously used private test footage and reference images are not distributed with the repository. The public example will show the source, reference, reviewed guidance and actual output from the same run; editing will label any shortened waiting periods.
+[English launch video](assets/henge-x-en.mp4) · [Chinese launch video](assets/henge-x-zh-CN.mp4)
 
-The planned Agent/fal prototype is not a current product demonstration.
+The demo uses original fictional actors generated for Henge. One 6.08-second source was processed through the current Depth + SAM workflow and replaced using the supplied character image. The 1280 × 720 export has 145 video frames, and all 191 compressed audio packets match the source.
+
+[Source](assets/demo-source.mp4) · [Reference](assets/demo-reference.jpg) · [Reviewed guidance](assets/demo-guidance.mp4) · [Uncut result](assets/demo-result.mp4)
+
+The 20-second promotional edit shows the actual before/after comparison and guidance UI. Waiting time is omitted. The planned Agent/fal prototype is not presented as a released feature. Private test footage and upstream example media are not distributed.
 
 ## Accounts, cost and waiting
 

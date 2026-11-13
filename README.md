@@ -10,6 +10,14 @@ Bring a short source clip and a character reference. Prepare motion guidance, in
 
 > **Bring your own API keys.** The application runs locally; AI processing uses paid cloud services. You need DreamAPI and Replicate accounts with available credit. Start with a single clearly visible subject in a 4–30 second clip.
 
+## See it in action
+
+[![Henge: original clip and actual replacement result](docs/assets/demo-preview.en.gif)](docs/assets/henge-x-en.mp4)
+
+[Watch the 20-second demo](docs/assets/henge-x-en.mp4) · [Source clip](docs/assets/demo-source.mp4) · [Character reference](docs/assets/demo-reference.jpg) · [Uncut result](docs/assets/demo-result.mp4)
+
+Original AI-generated actors; the comparison shows the actual output of one Henge replacement run. The promotional edit omits processing time.
+
 ## How it works
 
 ![Source clip and character reference, guidance preparation and review, cloud generation, and local original-audio restoration](docs/assets/workflow.svg)

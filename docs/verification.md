@@ -29,3 +29,11 @@ The PC-first layout was inspected in actual Chrome at 1024×768, 1280×720, 1366
 Browser file-picker checks rejected an empty file, a one-second source, a source above 500 MB, and a six-second source combined with a 29-second identity video. A valid six-second video was accepted for local preview. Field feedback and dismissible toasts were checked in both languages; only UI wording changes on language switches. Audio-track validation remains authoritative on the server before a paid worker can start. No new paid generation was submitted in this appearance iteration.
 
 The desktop appearance and upload checks were completed without additional paid generation calls. Core workflow prompt contents remain independent of interface language.
+
+## Henge rename and public demonstration — 2026-11-13
+
+Public branding, repository name and download filenames now use Henge. Legacy OS credential entries and browser appearance/language/task preferences migrate to the new namespace. Deleting a key removes its legacy entry too, preventing it from reappearing. Prior runtime media and task records are retained.
+
+39 Python tests, 14 upload-boundary assertions and 7 browser-storage migration assertions passed. Native platform contract checks passed on GitHub-hosted macOS and Windows runners; this does not establish a full live Windows generation run.
+
+The public demonstration uses newly generated fictional actors and one actual Henge replacement run: 6.08-second source, Depth + SAM guidance reviewed across all 145 frames, one DreamAPI replacement submission, 1280 × 720 aligned export with 145 frames, and all 191 compressed source audio packets preserved exactly. No failed-stage resubmission or mask repair was needed for this example. Original media, guidance and the uncut output are linked from the showcase pages. English and Chinese launch videos are 20-second 1080 × 1080 H.264/AAC edits; source/result comparisons use the same original timing and processing waits are omitted.
