@@ -16,7 +16,7 @@ class PlatformRuntimeTests(unittest.TestCase):
         vault = Mock()
         vault.set_password.side_effect = lambda service, provider, value: values.update({(service, provider): value})
         vault.get_password.side_effect = lambda service, provider: values.get((service, provider))
-        vault.delete_password.side_effect = lambda service, provider: values.pop((service, provider))
+        vault.delete_password.side_effect = lambda service, provider: values.pop((service, provider), None)
         module = types.ModuleType('keyring.backends.Windows')
         module.WinVaultKeyring = Mock(return_value=vault)
         with patch.object(sys, 'platform', 'win32'), patch.dict(sys.modules, {'keyring.backends.Windows': module}):
@@ -27,6 +27,21 @@ class PlatformRuntimeTests(unittest.TestCase):
             credential_store.delete_key('dreamapi')
             self.assertEqual(credential_store.get_key('dreamapi'), '')
             self.assertEqual(credential_store.get_key('replicate'), 'other-token')
+
+    def test_legacy_keys_migrate_and_deletion_does_not_restore_them(self):
+        values = {(credential_store.LEGACY_SERVICE, 'dreamapi'): 'legacy-token'}
+        vault = Mock()
+        vault.get_password.side_effect = lambda service, provider: values.get((service, provider))
+        vault.set_password.side_effect = lambda service, provider, value: values.update({(service, provider): value})
+        vault.delete_password.side_effect = lambda service, provider: values.pop((service, provider), None)
+        with patch('credential_store._backend', return_value=vault):
+            self.assertEqual(credential_store.get_key('dreamapi'), 'legacy-token')
+            self.assertEqual(values[(credential_store.SERVICE, 'dreamapi')], 'legacy-token')
+            credential_store.save_key('dreamapi', 'new-token')
+            self.assertEqual(credential_store.get_key('dreamapi'), 'new-token')
+            credential_store.delete_key('dreamapi')
+            self.assertEqual(credential_store.get_key('dreamapi'), '')
+            self.assertNotIn((credential_store.LEGACY_SERVICE, 'dreamapi'), values)
 
     def test_real_native_backend_can_be_loaded_without_reading_keys(self):
         if sys.platform not in ("darwin", "win32"):

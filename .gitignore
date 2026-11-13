@@ -6,8 +6,5 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .DS_Store
-.impeccable/config.local.json
 .runtime.lock
-.impeccable/review/
-.impeccable/mocks/
-.impeccable/questions/
+docs/assets/production-private/

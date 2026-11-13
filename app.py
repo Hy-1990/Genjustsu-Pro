@@ -1,4 +1,4 @@
-"""Local-only Genjustsu Pro browser application."""
+"""Local-only Henge browser application."""
 from contextlib import asynccontextmanager
 from pathlib import Path
 import secrets
@@ -28,7 +28,7 @@ async def lifespan(app):
         lock_runtime(lockfile)
     except OSError:
         lockfile.close()
-        raise RuntimeError("Genjustsu Pro is already running from this project.")
+        raise RuntimeError("Henge is already running from this project.")
     try:
         jobs.STOP.clear()
         jobs.recover()
@@ -39,7 +39,7 @@ async def lifespan(app):
         lockfile.close()
 
 
-app = FastAPI(title="Genjustsu Pro", lifespan=lifespan, docs_url=None, redoc_url=None)
+app = FastAPI(title="Henge", lifespan=lifespan, docs_url=None, redoc_url=None)
 
 
 @app.middleware("http")
@@ -87,7 +87,7 @@ def session():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "Genjustsu Pro"}
+    return {"status": "ok", "service": "Henge"}
 
 
 @app.get("/api/keys")

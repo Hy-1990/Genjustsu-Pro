@@ -14,7 +14,6 @@ Original-footage mask repair retains existing depth segmentation coverage and fi
 - Completed a real SAM preparation and original-footage mask repair. Reviewed all 717 guidance frames plus browser playback before approval.
 - Tested source/reference loading, preview tabs, approval, direct 720p submission, task persistence, bilingual UI, narrow-screen state visibility, and invalid empty-key validation in actual Chrome. Empty-key validation rejects before writing Keychain.
 - 30 isolated offline tests pass, including unchanged upstream prompt contracts, source-audio packet preservation, duration alignment, no automatic duplicate submission, cached-depth reuse, transient safe-read recovery, ambiguous-submit blocking, repair-path recovery and mask-hole filling.
-- Impeccable finish review found three material issues; all three resolved in its verdict. Root design documentation refreshed from final code.
 
 ## Live result
 
@@ -29,4 +28,4 @@ The PC-first layout was inspected in actual Chrome at 1024×768, 1280×720, 1366
 
 Browser file-picker checks rejected an empty file, a one-second source, a source above 500 MB, and a six-second source combined with a 29-second identity video. A valid six-second video was accepted for local preview. Field feedback and dismissible toasts were checked in both languages; only UI wording changes on language switches. Audio-track validation remains authoritative on the server before a paid worker can start. No new paid generation was submitted in this appearance iteration.
 
-31 Python tests and 14 JavaScript boundary assertions pass. Taste copy lint reports 0 FAIL and 0 WARN. Marketing-page hero/effect prescriptions are not applied to this existing PC editing tool; verification uses its actual working UI. The final font/contrast correction was rechecked across all ten desktop theme/viewport combinations after the Mac was unlocked. Impeccable’s scoped finish verdict is ship. Small-laptop density keeps the advanced-options entry visible, and the output footer remains anchored when inspector content expands. Day preference restores after reload; switching themes preserved the same video URL and playback position.
+The desktop appearance and upload checks were completed without additional paid generation calls. Core workflow prompt contents remain independent of interface language.

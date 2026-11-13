@@ -1,22 +1,54 @@
-# Genjustsu Pro
+# Henge
 
 [English](README.md) · **简体中文**
 
-一个本地运行的视频换角工作台。先准备并检查动作引导，再通过 **DreamAPI Seedance 2.5** 直接生成所选分辨率，导出时恢复原始音轨。
+**开源 AI 视频角色替换工作台。**
 
-## 功能
+提供一段原视频和目标角色参考，准备动作引导、检查遮罩，通过 **DreamAPI Seedance 2.5** 生成，再恢复原声并导出。
 
-- 日间／夜间主题，记住上次选择。PC 工作台以大预览区、内部滚动的素材区和固定生成操作区构成一屏 Studio，详细步骤按需展开。
-- 选择文件时提前校验格式、大小和时长，上传限制直接可见；错误与成功 Toast 支持中英文、手动关闭。
-- 中文、英文界面切换，最近任务与原片、引导、深度、遮罩、成片预览。
-- 三种引导方式：深度 + SAM 人物分割、人脸网格、深度 + SAM 人物分割 + 人脸网格。
-- 使用 DreamAPI 生成视频和上传素材，直接输出 480p、720p 或 1080p。
-- 使用 Replicate 完成人声分离、视频深度估计和逐帧人物分割。
-- 页面配置 API 密钥，使用 **macOS 系统钥匙串或 Windows 凭据管理器**保存，重启后自动读取。
-- 输入审批绑定文件指纹。记录生成任务编号，重启后继续获取结果。
-- 完整保留源视频第一条音轨。生成时长取整产生的小幅偏差，会通过生成画面尾部补帧或裁剪对齐，并在页面提示。
+[开始使用](#安装与启动) · [流程与已验证案例](docs/showcase.zh-CN.md) · [路线图](#路线图) · [反馈问题](https://github.com/Hy-1990/Henge/issues)
 
-语言切换只影响界面文案。模型提示词保留原项目的原文；切换界面语言时，不会翻译用户填写或任务已保存的提示词。
+> **需要自备 API 密钥。** 页面和媒体处理程序在本机运行，AI 推理由付费云服务完成。需要有可用余额的 DreamAPI、Replicate 账户。建议从单人清晰可见、带音轨的 4–30 秒素材开始。
+
+## 三步完成换角
+
+![原片和角色参考、引导制作与审核、云端生成及本地原声恢复流程](docs/assets/workflow.zh-CN.svg)
+
+1. **准备**：上传原片与参考，制作深度/遮罩或人脸网格引导。
+2. **检查**：预览整段引导，确认后批准当前版本。
+3. **生成**：选择分辨率，提交一次生成，恢复原声后预览、下载。
+
+## 桌面工作台
+
+![Henge 中文桌面工作台](docs/assets/studio-light.zh-CN.jpg)
+
+<details>
+<summary>查看夜间外观</summary>
+
+![Henge 夜间外观](docs/assets/studio-dark.zh-CN.jpg)
+
+</details>
+
+## 当前可用能力
+
+- **PC 工作台**：大画面预览、日夜主题、中英文界面、可见处理步骤与任务恢复。
+- **三种引导**：深度 + SAM、快速人脸网格、深度 + SAM + 人脸网格。网格模式需要安装可选组件。
+- **直接输出成片**：接入 DreamAPI，选择 480p、720p 或 1080p，不经过草稿升级步骤。
+- **页面配置密钥**：存入 macOS 钥匙串或 Windows 凭据管理器。
+- **先检查再生成**：审批绑定已准备的输入；保存任务编号，断线后继续查询，不自动重复提交付费生成。
+- **保留原声**：本地恢复源视频第一条音轨，小幅时长调整会明确提示。
+
+开源的是工作流和交互界面，不是视频生成模型。当前深度、人声分离及 SAM 分割使用 Replicate，最终生成使用 DreamAPI。界面语言切换不会翻译核心工作流提示词或用户填写的提示词。
+
+## 路线图
+
+下面是**待讨论的规划，尚未上线**：
+
+- Agent 对话调整结构化人物替换计划。
+- 通过 fal 点选、框选人物，按镜头修正遮罩。
+- 明确人物与参考图映射，跨镜头由用户确认目标身份。
+
+当前不能保证自动跨镜头认出同一个人，也不能保证所有非目标人物逐像素不变。选素材前请先阅读[案例和限制](docs/showcase.zh-CN.md)。
 
 ## 安装与启动
 
@@ -34,8 +66,8 @@
 4. 在希望保存项目的目录打开 PowerShell，依次执行：
 
    ```powershell
-   git clone https://github.com/Hy-1990/Genjustsu-Pro.git
-   cd Genjustsu-Pro
+   git clone https://github.com/Hy-1990/Henge.git
+   cd Henge
    .\setup.cmd
    .\start.cmd
    ```
@@ -78,8 +110,8 @@ Windows 适配包含离线契约测试；尚未完成真实 Windows 环境的整
 需要 Python 3.12 及以上版本和 Rubber Band。可选人脸网格组件使用独立的 Python 3.12 环境。
 
 ```bash
-git clone https://github.com/Hy-1990/Genjustsu-Pro.git
-cd Genjustsu-Pro
+git clone https://github.com/Hy-1990/Henge.git
+cd Henge
 brew install python@3.12 rubberband
 PYTHON=python3.12 bash setup.sh
 # 可选：安装人脸网格组件

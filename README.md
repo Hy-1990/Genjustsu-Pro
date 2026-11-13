@@ -1,22 +1,54 @@
-# Genjustsu Pro
+# Henge
 
 **English** · [简体中文](README.zh-CN.md)
 
-A local macOS/Windows workspace for video character replacement. Prepare depth/mask or face-mesh motion guidance, inspect it, generate once with **DreamAPI Seedance 2.5**, then export with the original soundtrack.
+**An open-source workspace for AI video character replacement.**
 
-## Features
+Bring a short source clip and a character reference. Prepare motion guidance, inspect the mask, generate with **DreamAPI Seedance 2.5**, and export with the original soundtrack.
 
-- Day/night appearances with saved preference and a PC-first, single-screen Studio: a large viewer, internally scrolling inspector, anchored generation controls and on-demand processing steps.
-- Early format, size and duration validation, inline upload requirements and dismissible, bilingual error/success toasts.
-- Chinese and English interface, recent tasks, and original / guidance / depth / mask / result previews.
-- Three preparation methods: Depth + SAM, Fast Face Mesh, and Depth + SAM + Face Mesh.
-- DreamAPI generation and media uploads, with direct 480p / 720p / 1080p output.
-- Replicate vocal separation, video depth estimation and per-frame subject segmentation.
-- API keys entered on the page and saved in **macOS Keychain or Windows Credential Manager**, then loaded automatically on restart.
-- Input approval bound to file fingerprints. Saved task IDs allow result collection to resume.
-- Complete preservation of the source video's first audio track. Small duration differences are aligned using the generated video's tail and disclosed in the interface.
+[Get started](#install-and-start) · [Workflow & verified example](docs/showcase.md) · [Roadmap](#roadmap) · [Report a problem](https://github.com/Hy-1990/Henge/issues)
 
-The language switch changes interface labels only. Model instructions retain the original upstream wording. User-entered and saved prompts are not translated when switching languages.
+> **Bring your own API keys.** The application runs locally; AI processing uses paid cloud services. You need DreamAPI and Replicate accounts with available credit. Start with a single clearly visible subject in a 4–30 second clip.
+
+## How it works
+
+![Source clip and character reference, guidance preparation and review, cloud generation, and local original-audio restoration](docs/assets/workflow.svg)
+
+1. **Prepare** — upload the source clip and reference; build depth/mask or face-mesh guidance.
+2. **Review** — inspect the entire guidance video and approve the current version.
+3. **Generate** — choose a resolution, submit once, then preview and download with the original audio restored.
+
+## Desktop workspace
+
+![Henge desktop workspace in English](docs/assets/studio-light.en.jpg)
+
+<details>
+<summary>Night appearance</summary>
+
+![Henge night appearance](docs/assets/studio-dark.en.jpg)
+
+</details>
+
+## What you can use today
+
+- **A desktop Studio:** large media preview, day/night appearance, English/Chinese interface, visible processing stages and recoverable tasks.
+- **Three guidance methods:** Depth + SAM, Fast Face Mesh, and Depth + SAM + Face Mesh. Face-mesh methods require the optional worker.
+- **Direct Seedance output:** DreamAPI integration for 480p, 720p and 1080p; no draft/upgrade step.
+- **API keys on the page:** saved in macOS Keychain or Windows Credential Manager, rather than secret configuration files.
+- **Review before generation:** approval is tied to the prepared input; saved task IDs support reconnecting after an interruption without automatically resubmitting a paid generation.
+- **Original soundtrack:** restore the source video's first audio track locally; disclose small duration adjustments.
+
+The app is a workflow and interface, not an open-source video generation model. Depth and vocal separation are provided by Replicate, along with the current SAM segmentation adapter; final video generation is provided by DreamAPI. Interface language changes never translate core workflow instructions or user-entered prompts.
+
+## Roadmap
+
+The following items are **proposals, not released features**:
+
+- Agent-assisted conversation for editing a structured replacement plan.
+- fal-powered point/box selection and per-shot mask corrections.
+- Explicit character-to-image mapping and cross-shot human confirmation.
+
+Automatic identity matching across cuts and pixel-perfect preservation of every non-target person are not currently guaranteed. See the [showcase and limitations](docs/showcase.md) before choosing footage.
 
 ## Install and start
 
@@ -34,8 +66,8 @@ The language switch changes interface labels only. Model instructions retain the
 4. In the folder where you want to keep the project, run:
 
    ```powershell
-   git clone https://github.com/Hy-1990/Genjustsu-Pro.git
-   cd Genjustsu-Pro
+   git clone https://github.com/Hy-1990/Henge.git
+   cd Henge
    .\setup.cmd
    .\start.cmd
    ```
@@ -78,8 +110,8 @@ Windows support includes offline contract tests; a real Windows paid generation 
 Requires Python 3.12+ and Rubber Band. The optional mesh worker uses an isolated Python 3.12 environment.
 
 ```bash
-git clone https://github.com/Hy-1990/Genjustsu-Pro.git
-cd Genjustsu-Pro
+git clone https://github.com/Hy-1990/Henge.git
+cd Henge
 brew install python@3.12 rubberband
 PYTHON=python3.12 bash setup.sh
 # Optional: enable the face-mesh methods
@@ -110,7 +142,7 @@ Keys are stored in the current user's macOS Keychain or Windows Credential Manag
 - Identity reference videos can be 2–30 seconds; combined source and identity reference duration must be <=30 seconds, following the current DreamAPI reference-video limit.
 - Source codecs must be decodable by PyAV and playable in the browser. Audio must be compatible with MP4 remuxing. H.264 + AAC in MP4 is the most portable input.
 - Face-mesh methods target a single centered speaker. Full-clip visual approval is still required.
-- The generation adapter follows the DreamAPI skill's current Seedance 2.5 multimodal input contract. Real-person reference support was confirmed by the platform owner. Output quality depends on the provider and inputs.
+- The generation adapter follows the DreamAPI Seedance 2.5 multimodal input contract. Real-person reference support was confirmed by the platform owner. Output quality depends on the provider and inputs.
 - Small output/source duration differences up to 1.1 seconds are aligned locally. Larger mismatches stop export rather than cutting the original soundtrack.
 - If submission times out without a task ID, the interface blocks repeat submission. Check DreamAPI's task history and billing before deliberately creating another task.
 - Preparation saves Replicate prediction IDs and completed artifacts. **Continue preparation** reconnects to the same cloud tasks and reuses completed steps after a local interruption. A fresh paid retry is offered only for a confirmed failed/canceled stage and requires an explicit click. An ambiguous submission blocks resubmission until provider history is checked.

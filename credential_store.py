@@ -2,7 +2,8 @@
 import sys
 import threading
 
-SERVICE = "com.hy1990.genjustsu-pro"
+SERVICE = "com.hy1990.henge"
+LEGACY_SERVICE = "com.hy1990.genjustsu-pro"
 PROVIDERS = ("dreamapi", "replicate")
 _lock = threading.RLock()
 
@@ -21,7 +22,14 @@ def get_key(provider):
     if provider not in PROVIDERS:
         raise ValueError("Unknown provider")
     with _lock:
-        return _backend().get_password(SERVICE, provider) or ""
+        backend = _backend()
+        current = backend.get_password(SERVICE, provider)
+        if current:
+            return current
+        legacy = backend.get_password(LEGACY_SERVICE, provider)
+        if legacy:
+            backend.set_password(SERVICE, provider, legacy)
+        return legacy or ""
 
 
 def save_key(provider, value):
@@ -39,10 +47,13 @@ def delete_key(provider):
         raise ValueError("Unknown provider")
     from keyring.errors import PasswordDeleteError
     with _lock:
-        try:
-            _backend().delete_password(SERVICE, provider)
-        except PasswordDeleteError:
-            pass
+        backend = _backend()
+        # Remove both entries so a deleted key cannot reappear through migration.
+        for service in (SERVICE, LEGACY_SERVICE):
+            try:
+                backend.delete_password(service, provider)
+            except PasswordDeleteError:
+                pass
 
 
 def key_status():

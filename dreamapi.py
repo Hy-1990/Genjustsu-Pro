@@ -1,4 +1,4 @@
-"""DreamAPI Seedance 2.5 and storage, following the platform's skill client contract."""
+"""DreamAPI Seedance 2.5 and storage, following the platform's multimodal API contract."""
 from pathlib import Path
 from urllib.parse import urlparse
 

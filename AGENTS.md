@@ -1,4 +1,4 @@
-# Genjustsu Pro
+# Henge
 Local macOS/Windows single-user app. Keep credentials in macOS Keychain or Windows Credential Manager, never configuration files.
 Retain depth/SAM and face-mesh preparation with whole-clip human review.
 Use DreamAPI Seedance 2.5 directly at the chosen resolution. No draft or upgrade path.

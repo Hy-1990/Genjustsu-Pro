@@ -230,7 +230,7 @@ const copy = {
 };
 
 const $ = (selector) => document.querySelector(selector);
-let language = localStorage.getItem("genjustsu.language") === "en" ? "en" : "zh";
+let language = localStorage.getItem("henge.language") === "en" ? "en" : "zh";
 let token = "";
 let keys = {dreamapi: false, replicate: false};
 let jobId = null;
@@ -264,7 +264,7 @@ function toast(message, kind = "error", messageKey = "") {
 
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  try { localStorage.setItem("genjustsu.theme", theme); } catch {}
+  try { localStorage.setItem("henge.theme", theme); } catch {}
   $("#theme-light").setAttribute("aria-pressed", String(theme === "light"));
   $("#theme-dark").setAttribute("aria-pressed", String(theme === "dark"));
 }
@@ -439,7 +439,7 @@ function setPreview(filename) {
   $("#media-stage").classList.add("has-video");
   $("#download").hidden = false;
   $("#download").href = url;
-  $("#download").download = filename === "final-preview.mp4" ? "genjustsu-" + jobId.slice(0, 8) + ".mp4" : filename;
+  $("#download").download = filename === "final-preview.mp4" ? "henge-" + jobId.slice(0, 8) + ".mp4" : filename;
   const label = {"upload.mp4": "original", "original.mp4": "original", "seedance-input.mp4": "guidance", "depth.mp4": "depth", "mask.mp4": "mask", "final-preview.mp4": "result"};
   $("#preview-caption").textContent = t(label[filename]) + (filename === "final-preview.mp4" ? " · " + t("originalAudio") : "");
   document.querySelectorAll("#preview-tabs button").forEach((button) => {
@@ -663,7 +663,7 @@ async function selectJob(ident) {
   job = null;
   previousState = null;
   selectedPreview = "";
-  localStorage.setItem("genjustsu.lastTask", ident);
+  localStorage.setItem("henge.lastTask", ident);
   showSettings(false);
   await pollJob(ident);
   if (job?.prompt) {
@@ -691,7 +691,7 @@ function newTask() {
   jobId = job = previousState = null;
   selectedPreview = "";
   clearFiles();
-  localStorage.removeItem("genjustsu.lastTask");
+  localStorage.removeItem("henge.lastTask");
   $("#source-name").textContent = t("chooseVideo");
   $("#prompt").value = WORKFLOW_DEFAULT_PROMPT;
   delete $("#prompt").dataset.edited;
@@ -711,7 +711,7 @@ function updatePromptCount() {
 
 $("#language").onclick = () => {
   language = language === "zh" ? "en" : "zh";
-  localStorage.setItem("genjustsu.language", language);
+  localStorage.setItem("henge.language", language);
   applyLanguage();
 };
 $("#new-task").onclick = newTask;
@@ -802,7 +802,7 @@ $("#source-form").onsubmit = async (event) => {
     const response = await api("/api/jobs", {method: "POST", body: data});
     // Keep the character selection made before preparation.
     jobId = response.id;
-    localStorage.setItem("genjustsu.lastTask", jobId);
+    localStorage.setItem("henge.lastTask", jobId);
     previousState = null;
     selectedPreview = "";
     await refreshHistory();
@@ -936,7 +936,7 @@ async function boot() {
     token = (await api("/api/session")).token;
     await refreshKeys();
     await refreshHistory();
-    const saved = localStorage.getItem("genjustsu.lastTask");
+    const saved = localStorage.getItem("henge.lastTask");
     if (saved && historyItems.some((item) => item.id === saved)) await selectJob(saved);
   } catch (error) { toast(errorMessage(error), "error", "error_" + error.message); }
 }
